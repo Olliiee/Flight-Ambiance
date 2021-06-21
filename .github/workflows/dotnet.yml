@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      working-directory: ./Flight Ambiance
+      working-directory: './Flight Ambiance'
       run: dotnet restore
     - name: Build
-      working-directory: ./Flight Ambiance
+      working-directory: './Flight Ambiance'
       run: dotnet build --no-restore
     - name: Test
-      working-directory: ./Flight Ambiance
+      working-directory: './Flight Ambiance'
       run: dotnet test --no-build --verbosity normal
