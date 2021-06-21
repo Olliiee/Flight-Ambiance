@@ -1,2 +1,2 @@
 # Introduction 
-This is a stand alone application for the Micrsoft Flight Simulator 2020.
+This is a stand alone application for the Micrsoft Flight Simulator 2020. It based on my former App CrewSounds for FS9. Flight Ambiance tries to create a more realistic ambiance during the virtual flight. Depending on the current situation you can hear the passangers are entering the aircaft during the boarding process. When the flightdeck door is closed the announcments sounds a bit muffled.
