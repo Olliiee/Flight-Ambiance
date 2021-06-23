@@ -28,6 +28,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Repositories
             var profile = await _csContext.Profiles.Where(profile => profile.Name == name)
                 .Include(profile => profile.ProfileItems)
                     .ThenInclude(item => item.FlightStatus)
+                .Include(profile => profile.ProfileItems)
+                    .ThenInclude(item => item.MediaFile)
                 .Include(profile => profile.FlightProfile)
                     .ThenInclude(flight => flight.FlightStatus)
                 .FirstOrDefaultAsync();
