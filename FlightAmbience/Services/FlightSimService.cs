@@ -51,26 +51,29 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void CloseConnection()
         {
-            try
+            if (connected)
             {
-                _logger.LogDebug("Trying to cancel request loop");
-                cts?.Cancel();
-                cts = null;
-                connected = false;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Cannot cancel request loop! Error: {ex.Message}");
-            }
-            try
-            {
-                // Dispose serves the same purpose as SimConnect_Close()
-                simconnect?.Dispose();
-                simconnect = null;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogWarning(ex, $"Cannot unsubscribe events! Error: {ex.Message}");
+                try
+                {
+                    _logger.LogDebug("Trying to cancel request loop");
+                    cts?.Cancel();
+                    cts = null;
+                    connected = false;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, $"Cannot cancel request loop! Error: {ex.Message}");
+                }
+                try
+                {
+                    // Dispose serves the same purpose as SimConnect_Close()
+                    simconnect?.Dispose();
+                    simconnect = null;
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, $"Cannot unsubscribe events! Error: {ex.Message}");
+                }
             }
         }
 

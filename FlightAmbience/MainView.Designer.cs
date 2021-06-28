@@ -29,6 +29,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.LoadingDialog = new System.Windows.Forms.Panel();
             this.LoadingLabel = new System.Windows.Forms.Label();
@@ -37,11 +38,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.OpenDebug = new System.Windows.Forms.Button();
             this.ProfileSelect = new System.Windows.Forms.ComboBox();
             this.GroundServiceRequest = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.AudioTest = new System.Windows.Forms.Button();
+            this.BoardingMinutes = new System.Windows.Forms.NumericUpDown();
+            this.EndBoardingCheck = new System.Windows.Forms.CheckBox();
+            this.GroundServiceTimer = new System.Windows.Forms.Timer(this.components);
             this.LoadingDialog.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BoardingMinutes)).BeginInit();
             this.SuspendLayout();
             // 
             // LoadingDialog
@@ -49,7 +50,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.LoadingDialog.BackColor = System.Drawing.Color.Silver;
             this.LoadingDialog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.LoadingDialog.Controls.Add(this.LoadingLabel);
-            this.LoadingDialog.Location = new System.Drawing.Point(26, 22);
+            this.LoadingDialog.Location = new System.Drawing.Point(13, 26);
             this.LoadingDialog.Name = "LoadingDialog";
             this.LoadingDialog.Size = new System.Drawing.Size(200, 82);
             this.LoadingDialog.TabIndex = 0;
@@ -87,7 +88,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // OpenDebug
             // 
-            this.OpenDebug.Location = new System.Drawing.Point(102, 96);
+            this.OpenDebug.Location = new System.Drawing.Point(136, 96);
             this.OpenDebug.Name = "OpenDebug";
             this.OpenDebug.Size = new System.Drawing.Size(90, 23);
             this.OpenDebug.TabIndex = 4;
@@ -113,47 +114,41 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.GroundServiceRequest.Text = "Need Ground Services?";
             this.GroundServiceRequest.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown1
+            // BoardingMinutes
             // 
-            this.numericUpDown1.Location = new System.Drawing.Point(183, 67);
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(43, 23);
-            this.numericUpDown1.TabIndex = 7;
-            this.numericUpDown1.Value = new decimal(new int[] {
+            this.BoardingMinutes.Location = new System.Drawing.Point(183, 67);
+            this.BoardingMinutes.Name = "BoardingMinutes";
+            this.BoardingMinutes.Size = new System.Drawing.Size(43, 23);
+            this.BoardingMinutes.TabIndex = 7;
+            this.BoardingMinutes.Value = new decimal(new int[] {
             10,
             0,
             0,
             0});
             // 
-            // checkBox2
+            // EndBoardingCheck
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(13, 71);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(160, 19);
-            this.checkBox2.TabIndex = 8;
-            this.checkBox2.Text = "Boarding time in minutes";
-            this.checkBox2.UseVisualStyleBackColor = true;
+            this.EndBoardingCheck.AutoSize = true;
+            this.EndBoardingCheck.Location = new System.Drawing.Point(13, 71);
+            this.EndBoardingCheck.Name = "EndBoardingCheck";
+            this.EndBoardingCheck.Size = new System.Drawing.Size(156, 19);
+            this.EndBoardingCheck.TabIndex = 8;
+            this.EndBoardingCheck.Text = "End boarding in minutes";
+            this.EndBoardingCheck.UseVisualStyleBackColor = true;
             // 
-            // AudioTest
+            // GroundServiceTimer
             // 
-            this.AudioTest.Location = new System.Drawing.Point(223, 96);
-            this.AudioTest.Name = "AudioTest";
-            this.AudioTest.Size = new System.Drawing.Size(75, 23);
-            this.AudioTest.TabIndex = 9;
-            this.AudioTest.Text = "Audio Test";
-            this.AudioTest.UseVisualStyleBackColor = true;
-            this.AudioTest.Click += new System.EventHandler(this.AudioTest_Click);
+            this.GroundServiceTimer.Interval = 1000;
+            this.GroundServiceTimer.Tick += new System.EventHandler(this.GroundServiceTimer_Tick);
             // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(314, 135);
+            this.ClientSize = new System.Drawing.Size(241, 135);
             this.Controls.Add(this.LoadingDialog);
-            this.Controls.Add(this.AudioTest);
-            this.Controls.Add(this.checkBox2);
-            this.Controls.Add(this.numericUpDown1);
+            this.Controls.Add(this.EndBoardingCheck);
+            this.Controls.Add(this.BoardingMinutes);
             this.Controls.Add(this.GroundServiceRequest);
             this.Controls.Add(this.ProfileSelect);
             this.Controls.Add(this.OpenDebug);
@@ -167,7 +162,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.Shown += new System.EventHandler(this.MainView_ShownAsync);
             this.LoadingDialog.ResumeLayout(false);
             this.LoadingDialog.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BoardingMinutes)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -182,9 +177,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.Button OpenDebug;
         private System.Windows.Forms.ComboBox ProfileSelect;
         private System.Windows.Forms.CheckBox GroundServiceRequest;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.Button AudioTest;
+        private System.Windows.Forms.NumericUpDown BoardingMinutes;
+        private System.Windows.Forms.CheckBox EndBoardingCheck;
+        private System.Windows.Forms.Timer GroundServiceTimer;
     }
 }
 

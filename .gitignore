@@ -558,4 +558,4 @@ obj/
 *.tlog
 
 # End of https://www.toptal.com/developers/gitignore/api/csharp,visualstudio,dotnetcore
-/Flight Ambience/bass*.dll
+bass*.dll

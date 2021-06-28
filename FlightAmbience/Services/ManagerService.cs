@@ -73,6 +73,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             callGroundServices = callGroundService;
         }
 
+        public void StopSimulator()
+        {
+            _flightSimService.CloseConnection();
+        }
+
         #endregion Public Methods
 
         #region Private Methods

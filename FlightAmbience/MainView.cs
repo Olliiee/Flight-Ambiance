@@ -21,6 +21,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private readonly ManagerService _managerService;
         private readonly ProfileRepository _profileRepository;
         private readonly MediaService _mediaService;
+        private int groundServiceTicker;
 
         public MainView(ILogger<MainView> logger,
             DataSeeder dataSeeder,
@@ -110,10 +111,23 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
         private async void StartSim_Click(object sender, EventArgs e)
         {
-            var profile = await _profileRepository.GetProfileByNameAsync(ProfileSelect.GetItemText(ProfileSelect.SelectedItem)).ConfigureAwait(false);
-            bool groundService = GroundServiceRequest.Checked;
-            _managerService.StartSimConnection(profile, groundService);
-            StartSim.Enabled = false;
+            if (StartSim.Text == "Start")
+            {
+                StartSim.Text = "Stop";
+                var profile = await _profileRepository.GetProfileByNameAsync(ProfileSelect.GetItemText(ProfileSelect.SelectedItem)).ConfigureAwait(false);
+                bool groundService = GroundServiceRequest.Checked;
+                _managerService.StartSimConnection(profile, groundService);
+
+                if (EndBoardingCheck.Checked)
+                {
+                    groundServiceTicker = (int)(BoardingMinutes.Value * 60);
+                    GroundServiceTimer.Enabled = true;
+                }
+            }
+            else
+            {
+                StartSim.Text = "Start";
+            }
         }
 
         private void OpenDebug_Click(object sender, EventArgs e)
@@ -122,15 +136,22 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             debug.ShowDialog();
         }
 
-        private void AudioTest_Click(object sender, EventArgs e)
-        {
-            var audio = (Form)Program.serviceProvider.GetService((typeof(AudioTest)));
-            audio.ShowDialog();
-        }
-
         private void MainView_FormClosing(object sender, FormClosingEventArgs e)
         {
             _flightSimService.CloseConnection();
+        }
+
+        private void GroundServiceTimer_Tick(object sender, EventArgs e)
+        {
+            if (groundServiceTicker == 0)
+            {
+                GroundServiceTimer.Enabled = false;
+                _managerService.RemoveJetway(true);
+            }
+            else
+            {
+                groundServiceTicker--;
+            }
         }
     }
 }
