@@ -205,7 +205,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void RemoveJetway(bool requestPushBack)
         {
-            _logger.LogTrace("Toggle Jetway");
+            _logger.LogDebug("Toggle Jetway");
             TransmitEvent(EventsEnum.TOGGLE_JETWAY, 1);
 
             if (requestPushBack)
@@ -221,7 +221,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void ToggleGroundService()
         {
-            _logger.LogTrace("Toggle Groundservices");
+            _logger.LogDebug("Toggle Groundservices");
             TransmitEvent(EventsEnum.TOGGLE_JETWAY, 1);
             TransmitEvent(EventsEnum.REQUEST_LUGGAGE, 1);
             TransmitEvent(EventsEnum.REQUEST_CATERING, 1);
@@ -251,7 +251,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         private void Simconnect_OnRecvOpen(SimConnect sender, SIMCONNECT_RECV_OPEN data)
         {
             _logger.LogInformation("Connected to Flight Simulator");
-            connected = true;
 
             cts?.Cancel();
             cts = new CancellationTokenSource();
@@ -259,6 +258,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             {
                 try
                 {
+                    connected = true;
                     while (true)
                     {
                         await Task.Delay(StatusDelayMilliseconds);

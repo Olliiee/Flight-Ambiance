@@ -23,6 +23,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         #endregion Private Fields
 
+        public FlightSimInfo CurrentFlightSimInfo { get; set; }
+
         #region Public Constructors
 
         public ManagerService(FlightSimService flightSimService,
@@ -76,13 +78,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         public void StopSimulator()
         {
             _flightSimService.CloseConnection();
+            _mediaService.StopAll();
         }
 
         #endregion Public Methods
 
         #region Private Methods
 
-        private async Task AmbianceProcess(FlightSimInfo flightSimInfo)
+        private async Task AmbianceProcess()
         {
             var item = profile.ProfileItems.Where(c => c.Sequence == currentSequence).FirstOrDefault();
             if (item != null)
@@ -91,14 +94,21 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                 FlightItem?.Invoke(item);
                 TextUpdater?.Invoke($"{flightStatus.Name} - {currentSequence}");
 
-                if (flightStatus.CallGroundServices && !groundServices && !flightSimInfo.IsDoorOpen && callGroundServices)
+                if (flightStatus.CallGroundServices && !groundServices && !CurrentFlightSimInfo.IsDoorOpen && callGroundServices)
                 {
-                    _logger.LogDebug($"Toogle Ground services {flightStatus.Name}: FlightStatus: {flightStatus.CallGroundServices}; NotCalled: {groundServices}; FlightSimInfo: {flightSimInfo.IsDoorOpen}; UserRequest: {callGroundServices}");
-                    _flightSimService.ToggleGroundService();
-                    groundServices = true;
+                    _logger.LogDebug($"Toogle Ground services {flightStatus.Name}: FlightStatus: {flightStatus.CallGroundServices}; NotCalled: {groundServices}; FlightSimInfo: {CurrentFlightSimInfo.IsDoorOpen}; UserRequest: {callGroundServices}");
+                    int i = 0;
+                    while (i < 5 && !CurrentFlightSimInfo.IsDoorOpen)
+                    {
+                        _logger.LogDebug($"Calling ground services");
+                        groundServices = true;
+                        _flightSimService.ToggleGroundService();
+                        await Task.Delay(TimeSpan.FromSeconds(15));
+                        i++;
+                    }
                 }
 
-                if (AmbianceService.CheckForNextItem(flightSimInfo, flightStatus))
+                if (AmbianceService.CheckForNextItem(CurrentFlightSimInfo, flightStatus))
                 {
                     _logger.LogDebug($"<<<< Next profile item {currentSequence} >>>>");
                     _mediaService.SetProfileItem(item);
@@ -143,7 +153,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
                         FlightSimInfos?.Invoke(flightSimInfo);
 
-                        await AmbianceProcess(flightSimInfo);
+                        CurrentFlightSimInfo = flightSimInfo;
+
+                        await AmbianceProcess();
                     }
                     catch (Exception ex)
                     {
