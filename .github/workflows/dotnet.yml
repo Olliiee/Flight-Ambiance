@@ -18,11 +18,7 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      working-directory: './Flight Ambiance'
-      run: dotnet restore
+      run: dotnet restore ./FlightAmbiance/Flight Ambiance NG.csproj
     - name: Build
-      working-directory: './Flight Ambiance'
-      run: dotnet build --no-restore
-    - name: Test
-      working-directory: './Flight Ambiance'
-      run: dotnet test --no-build --verbosity normal
+      working-directory: ./FlightAmbiance
+      run: dotnet build --no-restore ./FlightAmbiance/FlightAmbience.sln
