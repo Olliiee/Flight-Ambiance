@@ -105,7 +105,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public async Task StartAnnouncement(ProfileItem profileItem)
         {
-            var mediaFiles = profileItem.MediaFile.Where(m => m.Type == MediaType.Announcement).ToList();
+            var mediaFiles = profileItem.MediaFile.Where(m => m.Type == MediaType.Announcement).OrderBy(m => m.MediaFileId).ToList();
 
             foreach (var file in mediaFiles)
             {
@@ -135,6 +135,13 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                     bassMusicChannel = await PlayAudioFileAsync(mediaFile.Path, bassMusicChannel, profileItem.FlightStatus.IsDoorOpen, volume);
                 }
             }
+        }
+
+        public void StopAll()
+        {
+            StopSound(bassMusicChannel);
+            StopSound(bassAmbianceChannel);
+            StopSound(bassAnnouncementChannel);
         }
 
         #endregion Public Methods

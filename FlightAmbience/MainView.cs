@@ -127,6 +127,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             else
             {
                 StartSim.Text = "Start";
+                _managerService.StopSimulator();
             }
         }
 
