@@ -44,7 +44,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                  services.AddTransient<DebugView>();
                  services.AddTransient<SoundProfileView>();
 
-                 services.AddSingleton<AudioTest>();
                  services.AddSingleton<CsContext>();
                  services.AddSingleton<TextContent>();
 
