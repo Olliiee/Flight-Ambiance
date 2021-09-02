@@ -138,7 +138,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                         flightSimInfo.Latitude = Math.Round(receivedData.Latitude, 5);
                         flightSimInfo.Longitude = Math.Round(receivedData.Longitude, 5);
                         flightSimInfo.AltitudeAboveGround = Math.Round(receivedData.AltitudeAboveGround, 0);
-                        flightSimInfo.EngineRunning = receivedData.EngCombustion == 1;
+                        flightSimInfo.IsEngineRunning = receivedData.EngCombustion == 1;
                         flightSimInfo.GroundSpeed = Math.Round((receivedData.GroundSpeed * 1.94384), 0);
                         flightSimInfo.IndicatedAirSpeed = Math.Round((receivedData.IndicatedAirSpeed * 1.94384), 0);
                         flightSimInfo.IsOnGround = receivedData.SimOnGround != 0;
@@ -146,7 +146,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                         flightSimInfo.IsGearDown = receivedData.GearPosition == GearPosition.Down;
 
                         // Checking the parking brake position.
-                        flightSimInfo.ParkingBrakeOn = receivedData.BrakeParkingPosition > 0;
+                        flightSimInfo.IsParkingBrakeOn = receivedData.BrakeParkingPosition > 0;
 
                         // Main door open?
                         flightSimInfo.IsDoorOpen = receivedData.MainExit > .2;

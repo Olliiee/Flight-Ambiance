@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace Org.Strausshome.FS.CrewSoundsNG.Models
 {
@@ -18,11 +13,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Models
         public double IndicatedAirSpeed { get; set; }
         public double VerticalSpeed { get; set; }
         public bool IsOnGround { get; set; }
-        public bool EngineRunning { get; set; }
+        public bool IsEngineRunning { get; set; }
         public bool IsGearDown { get; set; }
 
         public bool IsDoorOpen { get; set; }
 
-        public bool ParkingBrakeOn { get; set; }
+        public bool IsParkingBrakeOn { get; set; }
     }
 }

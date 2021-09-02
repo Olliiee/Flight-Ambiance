@@ -110,12 +110,16 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             foreach (var file in mediaFiles)
             {
                 StopSound(bassMusicChannel);
-                while (Bass.BASS_ChannelIsActive(bassAnnouncementChannel) == BASSActive.BASS_ACTIVE_PLAYING)
+                if (Bass.BASS_ChannelIsActive(bassAnnouncementChannel) == BASSActive.BASS_ACTIVE_PLAYING)
                 {
-                    await Task.Delay(100);
+                    while (Bass.BASS_ChannelIsActive(bassAnnouncementChannel) == BASSActive.BASS_ACTIVE_PLAYING)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    await Wait();
                 }
 
-                await Wait();
                 float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()), profileItem.FlightStatus.IsEngineRun);
                 bassAnnouncementChannel = await PlayAudioFileAsync(file.Path, bassAnnouncementChannel, profileItem.FlightStatus.IsDoorOpen, volume);
             }
@@ -148,7 +152,17 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         #region Private Methods
 
-        private static float GetVolume(float volume, bool isEngineRun) => isEngineRun ? (volume / 50) : (volume / 100);
+        private static float GetVolume(float volume, BoolExt isEngineRun)
+        {
+            return isEngineRun switch
+            {
+                BoolExt.True => volume / 50,
+                BoolExt.False => volume / 100,
+                BoolExt.NotRequired => 0,
+                _ => 0,
+            };
+            ;
+        }
 
         private async void AudioCheck_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
@@ -158,7 +172,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             _audioCheck.Start();
         }
 
-        private async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, bool IsDoorOpen, float volume)
+        private async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, BoolExt IsDoorOpen, float volume)
         {
             if (File.Exists(audioFile))
             {
@@ -170,7 +184,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
                 audioChannel = Bass.BASS_StreamCreateFile($@"{audioFile}", 0L, 0L, BASSFlag.BASS_MUSIC_AUTOFREE);
 
-                if (!IsDoorOpen && await _settingsRepository.GetDoorEffect())
+                if (IsDoorOpen == BoolExt.False && await _settingsRepository.GetDoorEffect())
                 {
                     _logger.LogDebug("Setting lowpass filter.");
                     filter = Bass.BASS_ChannelSetFX(audioChannel, BASSFXType.BASS_FX_BFX_BQF, 0);
@@ -230,11 +244,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         private async Task Wait()
         {
-            int randomNumber = _random.Next(35, 100);
-            for (int i = 0; i < randomNumber; i++)
-            {
-                await Task.Delay(100);
-            }
+            int randomNumber = _random.Next(15, 30);
+            await Task.Delay(TimeSpan.FromSeconds(randomNumber));
         }
 
         #endregion Private Methods

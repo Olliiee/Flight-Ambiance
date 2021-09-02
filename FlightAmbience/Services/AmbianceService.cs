@@ -8,19 +8,52 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public static bool CheckForNextItem(FlightSimInfo flightSimInfo, FlightStatus flightStatus)
         {
-            if (flightStatus.IsDoorOpen != flightSimInfo.IsDoorOpen)
+            if (flightStatus.IsDoorOpen != BoolExt.NotRequired)
             {
-                return false;
+                if (flightStatus.IsDoorOpen == BoolExt.True && !flightSimInfo.IsDoorOpen)
+                {
+                    return false;
+                }
+                else if (flightStatus.IsDoorOpen == BoolExt.False && flightSimInfo.IsDoorOpen)
+                {
+                    return false;
+                }
             }
 
-            if (flightStatus.IsOnGround != flightSimInfo.IsOnGround)
+            if (flightStatus.IsOnGround != BoolExt.NotRequired)
             {
-                return false;
+                if (flightStatus.IsOnGround == BoolExt.True && !flightSimInfo.IsOnGround)
+                {
+                    return false;
+                }
+                else if (flightStatus.IsOnGround == BoolExt.False && flightSimInfo.IsOnGround)
+                {
+                    return false;
+                }
             }
 
-            if (flightStatus.IsEngineRun != flightSimInfo.EngineRunning)
+            if (flightStatus.IsEngineRun != BoolExt.NotRequired)
             {
-                return false;
+                if (flightStatus.IsEngineRun == BoolExt.True && !flightSimInfo.IsEngineRunning)
+                {
+                    return false;
+                }
+                else if (flightStatus.IsEngineRun == BoolExt.False && flightSimInfo.IsEngineRunning)
+                {
+                    return false;
+                }
+            }
+
+            if (flightStatus.IsParkingBrakeSet != BoolExt.NotRequired)
+            {
+                if (flightStatus.IsParkingBrakeSet == BoolExt.True && !flightSimInfo.IsParkingBrakeOn)
+                {
+                    return false;
+                }
+                else if (flightStatus.IsParkingBrakeSet == BoolExt.False && flightSimInfo.IsParkingBrakeOn)
+                {
+                    return false;
+                }
             }
 
             if (!GetValueCheck(flightStatus.AltitudeOperator, flightStatus.Altitude, flightSimInfo.Altitude))
@@ -39,11 +72,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             }
 
             if (!GetValueCheck(flightStatus.VerticalOperator, flightStatus.VerticalSpeed, flightSimInfo.VerticalSpeed))
-            {
-                return false;
-            }
-
-            if (flightStatus.ParkingBrakeSet != flightSimInfo.ParkingBrakeOn)
             {
                 return false;
             }

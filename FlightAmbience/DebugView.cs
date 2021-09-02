@@ -34,11 +34,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             ItemVerticalSpeed.Text = GetText(item.FlightStatus.VerticalSpeed, item.FlightStatus.VerticalOperator);
             ItemRadioAltitude.Text = GetText(item.FlightStatus.RadioAltitude, item.FlightStatus.RadioOperator);
             ItemGroundSpeed.Text = GetText(item.FlightStatus.GroundSpeed, item.FlightStatus.SpeedOperator);
-            ItemExitOpen.Checked = item.FlightStatus.IsDoorOpen;
-            ItemIsEngineRunning.Checked = item.FlightStatus.IsEngineRun;
-            ItemIsParkingBrakeSet.Checked = item.FlightStatus.ParkingBrakeSet;
-            ItemIsOnGround.Checked = item.FlightStatus.IsOnGround;
-            ItemIsGearDown.Checked = item.FlightStatus.IsGearDown;
+            ItemExitOpen.Checked = item.FlightStatus.IsDoorOpen == BoolExt.True;
+            ItemIsEngineRunning.Checked = item.FlightStatus.IsEngineRun == BoolExt.True;
+            ItemIsParkingBrakeSet.Checked = item.FlightStatus.IsParkingBrakeSet == BoolExt.True;
+            ItemIsOnGround.Checked = item.FlightStatus.IsOnGround == BoolExt.True;
+            ItemIsGearDown.Checked = item.FlightStatus.IsGearDown == BoolExt.True;
         }
 
         private static string GetText(int value, Operator valueOperator)
@@ -58,14 +58,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             LatitudeBox.Text = flightSimInfo.Latitude.ToString();
             LongitudeBox.Text = flightSimInfo.Longitude.ToString();
             AltitudeAboveGround.Text = flightSimInfo.AltitudeAboveGround.ToString();
-            EngineRunning.Checked = flightSimInfo.EngineRunning;
+            EngineRunning.Checked = flightSimInfo.IsEngineRunning;
             GroundSpeedBox.Text = flightSimInfo.GroundSpeed.ToString();
             IndicatedAirspeedBox.Text = flightSimInfo.IndicatedAirSpeed.ToString();
             IsOnGround.Checked = flightSimInfo.IsOnGround;
             VerticalSpeedBox.Text = flightSimInfo.VerticalSpeed.ToString();
 
             GearPosition.Checked = flightSimInfo.IsGearDown;
-            ParkingBrake.Checked = flightSimInfo.ParkingBrakeOn;
+            ParkingBrake.Checked = flightSimInfo.IsParkingBrakeOn;
             MainExitCheck.Checked = flightSimInfo.IsDoorOpen;
         }
     }

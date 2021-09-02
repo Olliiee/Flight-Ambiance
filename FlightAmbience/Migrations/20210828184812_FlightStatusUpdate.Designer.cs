@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Org.Strausshome.FS.CrewSoundsNG.Data;
 
 namespace Org.Strausshome.FS.CrewSoundsNG.Migrations
 {
     [DbContext(typeof(CsContext))]
-    partial class CsContextModelSnapshot : ModelSnapshot
+    [Migration("20210828184812_FlightStatusUpdate")]
+    partial class FlightStatusUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

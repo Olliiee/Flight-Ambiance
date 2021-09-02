@@ -188,7 +188,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
             var itemId = Convert.ToInt32(UsedFlightStatusItemsView.SelectedItems[0].Text);
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
-            profileItem.FlightStatus.IsDoorOpen = ItemExitOpen.Checked;
+            profileItem.FlightStatus.IsDoorOpen = ItemExitOpen.Checked ? BoolExt.True : BoolExt.False;
             var result = await _profileRepository.UpdateProfileItemAsync(profileItem).ConfigureAwait(false);
             if (!result)
             {
@@ -227,7 +227,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
             var itemId = Convert.ToInt32(UsedFlightStatusItemsView.SelectedItems[0].Text);
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
-            profileItem.FlightStatus.IsEngineRun = ItemIsEngineRunning.Checked;
+            profileItem.FlightStatus.IsEngineRun = ItemIsEngineRunning.Checked ? BoolExt.True : BoolExt.False;
             var result = await _profileRepository.UpdateProfileItemAsync(profileItem).ConfigureAwait(false);
             if (!result)
             {
@@ -243,7 +243,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
             var itemId = Convert.ToInt32(UsedFlightStatusItemsView.SelectedItems[0].Text);
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
-            profileItem.FlightStatus.IsGearDown = ItemIsGearDown.Checked;
+            profileItem.FlightStatus.IsGearDown = ItemIsGearDown.Checked ? BoolExt.True : BoolExt.False;
             var result = await _profileRepository.UpdateProfileItemAsync(profileItem).ConfigureAwait(false);
             if (!result)
             {
@@ -259,7 +259,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
             var itemId = Convert.ToInt32(UsedFlightStatusItemsView.SelectedItems[0].Text);
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
-            profileItem.FlightStatus.IsOnGround = ItemIsOnGround.Checked;
+            profileItem.FlightStatus.IsOnGround = ItemIsOnGround.Checked ? BoolExt.True : BoolExt.False;
             var result = await _profileRepository.UpdateProfileItemAsync(profileItem).ConfigureAwait(false);
             if (!result)
             {
@@ -275,7 +275,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
             var itemId = Convert.ToInt32(UsedFlightStatusItemsView.SelectedItems[0].Text);
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
-            profileItem.FlightStatus.ParkingBrakeSet = ItemIsParkingBrakeSet.Checked;
+            profileItem.FlightStatus.IsParkingBrakeSet = ItemIsParkingBrakeSet.Checked ? BoolExt.True : BoolExt.False;
             var result = await _profileRepository.UpdateProfileItemAsync(profileItem).ConfigureAwait(false);
             if (!result)
             {
@@ -423,11 +423,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             ItemVerticalSpeed.Text = GetText(profileItem.FlightStatus.VerticalSpeed, profileItem.FlightStatus.VerticalOperator);
             ItemRadioAltitude.Text = GetText(profileItem.FlightStatus.RadioAltitude, profileItem.FlightStatus.RadioOperator);
             ItemGroundSpeed.Text = GetText(profileItem.FlightStatus.GroundSpeed, profileItem.FlightStatus.SpeedOperator);
-            ItemExitOpen.Checked = profileItem.FlightStatus.IsDoorOpen;
-            ItemIsEngineRunning.Checked = profileItem.FlightStatus.IsEngineRun;
-            ItemIsGearDown.Checked = profileItem.FlightStatus.IsGearDown;
-            ItemIsParkingBrakeSet.Checked = profileItem.FlightStatus.ParkingBrakeSet;
-            ItemIsOnGround.Checked = profileItem.FlightStatus.IsOnGround;
+            ItemExitOpen.Checked = profileItem.FlightStatus.IsDoorOpen == BoolExt.True ? true : false;
+            ItemIsEngineRunning.Checked = profileItem.FlightStatus.IsEngineRun == BoolExt.True ? true : false;
+            ItemIsGearDown.Checked = profileItem.FlightStatus.IsGearDown == BoolExt.True ? true : false;
+            ItemIsParkingBrakeSet.Checked = profileItem.FlightStatus.IsParkingBrakeSet == BoolExt.True ? true : false;
+            ItemIsOnGround.Checked = profileItem.FlightStatus.IsOnGround == BoolExt.True ? true : false;
 
             MusicMediaType.Checked = false;
             AnnouncementMediaFile.Checked = false;
@@ -660,10 +660,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Boarding,
                 Ignore = false,
-                IsDoorOpen = true,
-                IsEngineRun = false,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.True,
+                IsEngineRun = BoolExt.False,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 30,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 0,
@@ -673,7 +673,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 Altitude = 10000,
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
-                ParkingBrakeSet = true,
+                IsParkingBrakeSet = BoolExt.True,
                 CallGroundServices = true,
                 Name = "Boarding",
                 Sequence = 1,
@@ -686,10 +686,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.PostBoarding,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = false,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.False,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 30,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 0,
@@ -699,7 +699,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 Altitude = 10000,
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
-                ParkingBrakeSet = true,
+                IsParkingBrakeSet = BoolExt.True,
                 CallGroundServices = false,
                 Name = "Welcome on board",
                 Sequence = 2,
@@ -712,10 +712,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.EngineStart,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 30,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 0,
@@ -725,7 +725,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 Altitude = 10000,
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Name = "After engine 1 start",
                 Sequence = 3,
@@ -738,10 +738,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Taxi,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 30,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 5,
@@ -752,7 +752,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "Taxi to departure",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 4,
                 Profile = flightProfile
@@ -764,10 +764,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.AfterTakeoff,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 100,
                 RadioOperator = Operator.Greater,
                 GroundSpeed = 60,
@@ -778,7 +778,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "After Take-Off",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 5,
                 Profile = flightProfile
@@ -790,10 +790,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.PassingTenUp,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 10000,
                 RadioOperator = Operator.Greater,
                 GroundSpeed = 150,
@@ -804,7 +804,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Greater,
                 SeatbeltsSignOn = true,
                 Name = "Passing 10.000ft climbing",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 6,
                 Profile = flightProfile
@@ -816,10 +816,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Climbing,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 12000,
                 RadioOperator = Operator.Greater,
                 GroundSpeed = 150,
@@ -830,7 +830,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Greater,
                 SeatbeltsSignOn = false,
                 Name = "Climbing",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 7,
                 Profile = flightProfile
@@ -842,10 +842,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Cruise,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 12000,
                 RadioOperator = Operator.Greater,
                 GroundSpeed = 150,
@@ -856,7 +856,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Greater,
                 SeatbeltsSignOn = false,
                 Name = "Cruising",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 8,
                 Profile = flightProfile
@@ -868,10 +868,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Descent,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 12000,
                 RadioOperator = Operator.Greater,
                 GroundSpeed = 150,
@@ -882,7 +882,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Greater,
                 SeatbeltsSignOn = true,
                 Name = "Descending",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 9,
                 Profile = flightProfile
@@ -894,10 +894,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.PassingTenDown,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 12000,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 150,
@@ -908,7 +908,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "Passing 10.000ft descending",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 10,
                 Profile = flightProfile
@@ -920,10 +920,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Approach,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = false,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.False,
                 RadioAltitude = 6000,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 150,
@@ -934,7 +934,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "Approach",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 11,
                 Profile = flightProfile
@@ -946,10 +946,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Landing,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = false,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.False,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 3000,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 150,
@@ -960,7 +960,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "Landing",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 12,
                 Profile = flightProfile
@@ -972,10 +972,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.AfterLanding,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = true,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.True,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 100,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 60,
@@ -986,7 +986,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = true,
                 Name = "After Landing",
-                ParkingBrakeSet = false,
+                IsParkingBrakeSet = BoolExt.False,
                 CallGroundServices = false,
                 Sequence = 13,
                 Profile = flightProfile
@@ -998,10 +998,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Parking,
                 Ignore = false,
-                IsDoorOpen = false,
-                IsEngineRun = false,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.False,
+                IsEngineRun = BoolExt.False,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 100,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 0,
@@ -1012,7 +1012,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = false,
                 Name = "Parking",
-                ParkingBrakeSet = true,
+                IsParkingBrakeSet = BoolExt.True,
                 CallGroundServices = false,
                 Sequence = 14,
                 Profile = flightProfile
@@ -1024,10 +1024,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 FlightStatusName = FlightStatusName.Deboarding,
                 Ignore = false,
-                IsDoorOpen = true,
-                IsEngineRun = false,
-                IsOnGround = true,
-                IsGearDown = true,
+                IsDoorOpen = BoolExt.True,
+                IsEngineRun = BoolExt.False,
+                IsOnGround = BoolExt.True,
+                IsGearDown = BoolExt.True,
                 RadioAltitude = 100,
                 RadioOperator = Operator.Less,
                 GroundSpeed = 0,
@@ -1038,7 +1038,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AltitudeOperator = Operator.Less,
                 SeatbeltsSignOn = false,
                 Name = "Deboarding",
-                ParkingBrakeSet = true,
+                IsParkingBrakeSet = BoolExt.True,
                 CallGroundServices = true,
                 Sequence = 15,
                 Profile = flightProfile
