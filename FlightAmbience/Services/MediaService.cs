@@ -244,7 +244,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         private async Task Wait()
         {
-            int randomNumber = _random.Next(15, 30);
+            int randomNumber = _random.Next(5, 15);
             await Task.Delay(TimeSpan.FromSeconds(randomNumber));
         }
 

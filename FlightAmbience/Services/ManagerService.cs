@@ -20,6 +20,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         private int currentSequence;
         private bool groundServices;
         private Profile profile;
+        private bool connectionInit;
 
         #endregion Private Fields
 
@@ -35,6 +36,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             _flightSimService = flightSimService;
             _flightSimService.DataRxEvent += FlightSimService_DataRxEvent;
             _mediaService = mediaService;
+            connectionInit = false;
         }
 
         #endregion Public Constructors
@@ -68,14 +70,19 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void StartSimConnection(Profile selectedProfile, bool callGroundService)
         {
-            _flightSimService.RegisterFlightStatusDefinition();
+            if (!connectionInit)
+            {
+                _flightSimService.RegisterFlightStatusDefinition();
+                connectionInit = true;
+            }
+
             profile = selectedProfile;
             currentSequence = 1;
             groundServices = false;
             callGroundServices = callGroundService;
         }
 
-        public void StopSimulator()
+        public void StopAmbiance()
         {
             _mediaService.StopAll();
         }

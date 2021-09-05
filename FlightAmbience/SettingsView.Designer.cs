@@ -71,6 +71,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.SeatbeldsAutoOnLabel.Size = new System.Drawing.Size(105, 15);
             this.SeatbeldsAutoOnLabel.TabIndex = 1;
             this.SeatbeldsAutoOnLabel.Text = "Turn seatbelt on at";
+            this.SeatbeldsAutoOnLabel.Visible = false;
             // 
             // SeatbeltAutoOn
             // 
@@ -99,6 +100,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             0,
             0,
             0});
+            this.SeatbeltAutoOn.Visible = false;
             this.SeatbeltAutoOn.ValueChanged += new System.EventHandler(this.SeatbeltAutoOn_ValueChanged);
             // 
             // SetingsLabel
@@ -138,6 +140,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             0,
             0,
             0});
+            this.SeatbeltAutoOff.Visible = false;
             this.SeatbeltAutoOff.ValueChanged += new System.EventHandler(this.SeatbeltAutoOff_ValueChanged);
             // 
             // SeatbeltAtoOffLabel
@@ -148,6 +151,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.SeatbeltAtoOffLabel.Size = new System.Drawing.Size(106, 15);
             this.SeatbeltAtoOffLabel.TabIndex = 4;
             this.SeatbeltAtoOffLabel.Text = "Turn seatbelt off at";
+            this.SeatbeltAtoOffLabel.Visible = false;
             // 
             // MusicVolume
             // 
@@ -203,6 +207,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.AutoSeatbelts.TabIndex = 11;
             this.AutoSeatbelts.Text = "Automatic seatbelts ";
             this.AutoSeatbelts.UseVisualStyleBackColor = true;
+            this.AutoSeatbelts.Visible = false;
             this.AutoSeatbelts.CheckedChanged += new System.EventHandler(this.AutoSeatbelts_CheckedChanged);
             // 
             // LowPassFreq

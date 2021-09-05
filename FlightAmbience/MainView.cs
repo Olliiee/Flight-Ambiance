@@ -14,14 +14,20 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 {
     public partial class MainView : Form
     {
-        private readonly ILogger<MainView> _logger;
+        #region Private Fields
+
         private readonly DataSeeder _dataSeeder;
-        private readonly TextContent _textContent;
         private readonly FlightSimService _flightSimService;
+        private readonly ILogger<MainView> _logger;
         private readonly ManagerService _managerService;
-        private readonly ProfileRepository _profileRepository;
         private readonly MediaService _mediaService;
+        private readonly ProfileRepository _profileRepository;
+        private readonly TextContent _textContent;
         private int groundServiceTicker;
+
+        #endregion Private Fields
+
+        #region Public Constructors
 
         public MainView(ILogger<MainView> logger,
             DataSeeder dataSeeder,
@@ -43,23 +49,43 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             _mediaService.SetHandle(Handle);
         }
 
-        private async void MainView_ShownAsync(object sender, EventArgs e)
+        #endregion Public Constructors
+
+        #region Protected Methods
+
+        protected override void DefWndProc(ref Message m)
         {
-            LoadingLabel.Text = _textContent.Loading;
-            LoadingDialog.Visible = true;
-            Application.DoEvents();
-
-            await _dataSeeder.CheckNecessaryDataAsync();
-            var profiles = await _profileRepository.GetAllProfiles();
-            foreach (var profile in profiles)
+            if (m.Msg == 0x402)
             {
-                ProfileSelect.Items.Add(profile.Name);
+                _logger.LogTrace("Message from Simconnect.");
+                _flightSimService.TriggerReceive();
             }
+            else
+            {
+                base.DefWndProc(ref m);
+            }
+        }
 
-            LoadingDialog.Visible = false;
+        #endregion Protected Methods
 
-            _flightSimService.Closed += FlightSimConnect_Closed;
-            await InitializeSimConnectAsync(_flightSimService);
+        #region Private Methods
+
+        private void FlightSimConnect_Closed(object sender, EventArgs e)
+        {
+            _logger.LogDebug("SimConnect is closed.");
+        }
+
+        private void GroundServiceTimer_Tick(object sender, EventArgs e)
+        {
+            if (groundServiceTicker == 0)
+            {
+                GroundServiceTimer.Enabled = false;
+                _managerService.RemoveJetway(true);
+            }
+            else
+            {
+                groundServiceTicker--;
+            }
         }
 
         private async Task InitializeSimConnectAsync(FlightSimService simConnect)
@@ -80,33 +106,40 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
         }
 
-        private void FlightSimConnect_Closed(object sender, EventArgs e)
+        private void MainView_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _logger.LogDebug("SimConnect is closed.");
+            _flightSimService.CloseConnection();
         }
 
-        protected override void DefWndProc(ref Message m)
+        private async void MainView_ShownAsync(object sender, EventArgs e)
         {
-            if (m.Msg == 0x402)
+            LoadingLabel.Text = _textContent.Loading;
+            LoadingDialog.Visible = true;
+            Application.DoEvents();
+
+            await _dataSeeder.CheckNecessaryDataAsync();
+            var profiles = await _profileRepository.GetAllProfiles();
+            foreach (var profile in profiles)
             {
-                _logger.LogTrace("Message from Simconnect.");
-                _flightSimService.TriggerReceive();
+                ProfileSelect.Items.Add(profile.Name);
             }
-            else
-            {
-                base.DefWndProc(ref m);
-            }
+
+            LoadingDialog.Visible = false;
+
+            _flightSimService.Closed += FlightSimConnect_Closed;
+            await InitializeSimConnectAsync(_flightSimService);
+        }
+
+        private void OpenDebug_Click(object sender, EventArgs e)
+        {
+            var debug = (Form)Program.serviceProvider.GetService((typeof(DebugView)));
+            debug.ShowDialog();
         }
 
         private void OpenSettings_Click(object sender, EventArgs e)
         {
             var settings = (Form)Program.serviceProvider.GetService((typeof(SettingsView)));
             settings.ShowDialog();
-        }
-
-        private void ToggleJetway_Click(object sender, EventArgs e)
-        {
-            _flightSimService.ToggleGroundService();
         }
 
         private async void StartSim_Click(object sender, EventArgs e)
@@ -127,32 +160,15 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             else
             {
                 StartSim.Text = "Start";
-                _managerService.StopSimulator();
+                _managerService.StopAmbiance();
             }
         }
 
-        private void OpenDebug_Click(object sender, EventArgs e)
+        private void ToggleJetway_Click(object sender, EventArgs e)
         {
-            var debug = (Form)Program.serviceProvider.GetService((typeof(DebugView)));
-            debug.ShowDialog();
+            _flightSimService.ToggleGroundService();
         }
 
-        private void MainView_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _flightSimService.CloseConnection();
-        }
-
-        private void GroundServiceTimer_Tick(object sender, EventArgs e)
-        {
-            if (groundServiceTicker == 0)
-            {
-                GroundServiceTimer.Enabled = false;
-                _managerService.RemoveJetway(true);
-            }
-            else
-            {
-                groundServiceTicker--;
-            }
-        }
+        #endregion Private Methods
     }
 }
