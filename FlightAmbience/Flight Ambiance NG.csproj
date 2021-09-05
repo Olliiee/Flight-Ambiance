@@ -7,6 +7,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <Platforms>AnyCPU;x64</Platforms>
     <UserSecretsId>0cef1906-3add-4b4b-aee0-f2640f140a19</UserSecretsId>
+    <Authors>Oliver Strauss</Authors>
   </PropertyGroup>
 
   <ItemGroup>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,10 @@ using Microsoft.Extensions.Logging;
 
 using Org.Strausshome.FS.CrewSoundsNG.Models;
 using Org.Strausshome.FS.CrewSoundsNG.Repositories;
+
+using static System.Net.WebRequestMethods;
+
+using File = System.IO.File;
 
 namespace Org.Strausshome.FS.CrewSoundsNG
 {
@@ -80,12 +85,24 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             var result = AddMediaFile.ShowDialog();
             if (result == DialogResult.OK)
             {
-                foreach (var file in AddMediaFile.SafeFileNames)
+                var fileNames = AddMediaFile.SafeFileNames;
+                var paths = AddMediaFile.FileNames;
+
+                for (int i = 0; i < paths.Length; i++)
                 {
+                    try
+                    {
+                        File.Copy(paths[i], $@"{Directory.GetCurrentDirectory()}\Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}", true);
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+
                     var newFile = new MediaFile()
                     {
-                        Name = file,
-                        Path = $@"{Directory.GetCurrentDirectory()}\Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{file}"
+                        Name = fileNames[i],
+                        Path = $@"{Directory.GetCurrentDirectory()}\Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}"
                     };
 
                     var isMusic = MessageBox.Show("Is this a music file?", "Question 1", MessageBoxButtons.YesNo, MessageBoxIcon.Question);

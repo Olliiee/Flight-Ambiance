@@ -77,7 +77,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void StopSimulator()
         {
-            _flightSimService.CloseConnection();
             _mediaService.StopAll();
         }
 
