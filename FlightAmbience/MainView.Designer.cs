@@ -29,7 +29,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainView));
             this.LoadingDialog = new System.Windows.Forms.Panel();
             this.LoadingLabel = new System.Windows.Forms.Label();
@@ -40,7 +39,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.GroundServiceRequest = new System.Windows.Forms.CheckBox();
             this.BoardingMinutes = new System.Windows.Forms.NumericUpDown();
             this.EndBoardingCheck = new System.Windows.Forms.CheckBox();
-            this.GroundServiceTimer = new System.Windows.Forms.Timer(this.components);
             this.LoadingDialog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.BoardingMinutes)).BeginInit();
             this.SuspendLayout();
@@ -136,11 +134,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.EndBoardingCheck.Text = "End boarding in minutes";
             this.EndBoardingCheck.UseVisualStyleBackColor = true;
             // 
-            // GroundServiceTimer
-            // 
-            this.GroundServiceTimer.Interval = 1000;
-            this.GroundServiceTimer.Tick += new System.EventHandler(this.GroundServiceTimer_Tick);
-            // 
             // MainView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -179,7 +172,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.CheckBox GroundServiceRequest;
         private System.Windows.Forms.NumericUpDown BoardingMinutes;
         private System.Windows.Forms.CheckBox EndBoardingCheck;
-        private System.Windows.Forms.Timer GroundServiceTimer;
     }
 }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.FlightSimulator.SimConnect;
@@ -13,18 +14,18 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
     {
         #region Private Fields
 
+        private static System.Timers.Timer eventTimer;
         private readonly FlightSimService _flightSimService;
         private readonly ILogger<ManagerService> _logger;
         private readonly MediaService _mediaService;
         private bool callGroundServices;
+        private bool connectionInit;
         private int currentSequence;
         private bool groundServices;
+        private int groundServiceTicker;
         private Profile profile;
-        private bool connectionInit;
 
         #endregion Private Fields
-
-        public FlightSimInfo CurrentFlightSimInfo { get; set; }
 
         #region Public Constructors
 
@@ -37,6 +38,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             _flightSimService.DataRxEvent += FlightSimService_DataRxEvent;
             _mediaService = mediaService;
             connectionInit = false;
+            eventTimer = new System.Timers.Timer(1000);
+            eventTimer.Elapsed += TimerEvent;
+            eventTimer.AutoReset = true;
         }
 
         #endregion Public Constructors
@@ -61,14 +65,23 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         #endregion Public Events
 
+        #region Public Properties
+
+        public FlightSimInfo CurrentFlightSimInfo { get; set; }
+
+        #endregion Public Properties
+
         #region Public Methods
 
-        public void RemoveJetway(bool callTug)
+        public void RemoveJetway(bool remove)
         {
-            _flightSimService.RemoveJetway(callTug);
+            _flightSimService.RemoveJetway(remove);
         }
 
-        public void StartSimConnection(Profile selectedProfile, bool callGroundService)
+        public void StartSimConnection(Profile selectedProfile,
+                                       bool callGroundService,
+                                       bool autoRemove,
+                                       int groundServiceSeconds)
         {
             if (!connectionInit)
             {
@@ -80,6 +93,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             currentSequence = 1;
             groundServices = false;
             callGroundServices = callGroundService;
+            groundServiceTicker = groundServiceSeconds;
+
+            eventTimer.Enabled = autoRemove;
         }
 
         public void StopAmbiance()
@@ -172,6 +188,19 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Error, something bad happened while reading the data.");
+            }
+        }
+
+        private void TimerEvent(object sender, ElapsedEventArgs e)
+        {
+            if (groundServiceTicker == 0)
+            {
+                eventTimer.Enabled = false;
+                RemoveJetway(true);
+            }
+            else
+            {
+                groundServiceTicker--;
             }
         }
 

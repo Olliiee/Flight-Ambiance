@@ -23,7 +23,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private readonly MediaService _mediaService;
         private readonly ProfileRepository _profileRepository;
         private readonly TextContent _textContent;
-        private int groundServiceTicker;
 
         #endregion Private Fields
 
@@ -75,19 +74,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             _logger.LogDebug("SimConnect is closed.");
         }
 
-        private void GroundServiceTimer_Tick(object sender, EventArgs e)
-        {
-            if (groundServiceTicker == 0)
-            {
-                GroundServiceTimer.Enabled = false;
-                _managerService.RemoveJetway(true);
-            }
-            else
-            {
-                groundServiceTicker--;
-            }
-        }
-
         private async Task InitializeSimConnectAsync(FlightSimService simConnect)
         {
             while (true)
@@ -132,13 +118,13 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
         private void OpenDebug_Click(object sender, EventArgs e)
         {
-            var debug = (Form)Program.serviceProvider.GetService((typeof(DebugView)));
+            var debug = (Form)Program.ServiceProvider.GetService((typeof(DebugView)));
             debug.ShowDialog();
         }
 
         private void OpenSettings_Click(object sender, EventArgs e)
         {
-            var settings = (Form)Program.serviceProvider.GetService((typeof(SettingsView)));
+            var settings = (Form)Program.ServiceProvider.GetService((typeof(SettingsView)));
             settings.ShowDialog();
         }
 
@@ -149,13 +135,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 StartSim.Text = "Stop";
                 var profile = await _profileRepository.GetProfileByNameAsync(ProfileSelect.GetItemText(ProfileSelect.SelectedItem)).ConfigureAwait(false);
                 bool groundService = GroundServiceRequest.Checked;
-                _managerService.StartSimConnection(profile, groundService);
-
-                if (EndBoardingCheck.Checked)
-                {
-                    groundServiceTicker = (int)(BoardingMinutes.Value * 60);
-                    GroundServiceTimer.Enabled = true;
-                }
+                _managerService.StartSimConnection(profile, groundService, EndBoardingCheck.Checked, (int)(BoardingMinutes.Value * 60));
             }
             else
             {
