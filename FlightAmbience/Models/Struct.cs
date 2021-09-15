@@ -2,6 +2,13 @@
 
 namespace Org.Strausshome.FS.CrewSoundsNG.Models
 {
+    public enum TimerTrigger
+    {
+        GroundService,
+        EndDeboarding,
+        Nothing
+    }
+
     public enum DEFINITIONS
     {
         AircraftData,

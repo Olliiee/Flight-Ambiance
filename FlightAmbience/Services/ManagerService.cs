@@ -18,11 +18,19 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         private readonly FlightSimService _flightSimService;
         private readonly ILogger<ManagerService> _logger;
         private readonly MediaService _mediaService;
-        private bool callGroundServices;
+
         private bool connectionInit;
         private int currentSequence;
+
+        #region groundservices
+
         private bool groundServices;
-        private int groundServiceTicker;
+        private bool callGroundServices;
+        private int secondsToStop;
+        private TimerTrigger trigger;
+
+        #endregion groundservices
+
         private Profile profile;
 
         #endregion Private Fields
@@ -93,9 +101,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             currentSequence = 1;
             groundServices = false;
             callGroundServices = callGroundService;
-            groundServiceTicker = groundServiceSeconds;
 
+            secondsToStop = groundServiceSeconds;
             eventTimer.Enabled = autoRemove;
+            trigger = TimerTrigger.GroundService;
         }
 
         public void StopAmbiance()
@@ -112,20 +121,26 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             var item = profile.ProfileItems.Where(c => c.Sequence == currentSequence).FirstOrDefault();
             if (item != null)
             {
-                var flightStatus = profile.FlightProfile.FlightStatus.Where(f => f.FlightStatusName == item.FlightStatus.FlightStatusName).FirstOrDefault();
+                var flightStatus = profile.FlightProfile.FlightStatus
+                    .Where(f => f.FlightStatusName == item.FlightStatus.FlightStatusName)
+                    .FirstOrDefault();
+
                 FlightItem?.Invoke(item);
                 TextUpdater?.Invoke($"{flightStatus.Name} - {currentSequence}");
 
+                // Profile item is set to request the ground services.
                 if (flightStatus.CallGroundServices && !groundServices && !CurrentFlightSimInfo.IsDoorOpen && callGroundServices)
                 {
                     _logger.LogDebug($"Toogle Ground services {flightStatus.Name}: FlightStatus: {flightStatus.CallGroundServices}; NotCalled: {groundServices}; FlightSimInfo: {CurrentFlightSimInfo.IsDoorOpen}; UserRequest: {callGroundServices}");
+
+                    // Sometime they need a bit longer, so waiting 20 seconds and try again.
                     int i = 0;
                     while (i < 5 && !CurrentFlightSimInfo.IsDoorOpen)
                     {
                         _logger.LogDebug($"Calling ground services");
                         groundServices = true;
                         _flightSimService.ToggleGroundService();
-                        await Task.Delay(TimeSpan.FromSeconds(15));
+                        await Task.Delay(TimeSpan.FromSeconds(20));
                         i++;
                     }
                 }
@@ -140,6 +155,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                     TextUpdater?.Invoke($"{flightStatus.Name} - {currentSequence}");
                     currentSequence++;
                     groundServices = false;
+
+                    // Last item? Stop the ambiance after 5 minutes.
+                    if (currentSequence == profile.ProfileItems.Count)
+                    {
+                        secondsToStop = 300;
+                        trigger = TimerTrigger.EndDeboarding;
+                        eventTimer.Enabled = true;
+                    }
                 }
             }
         }
@@ -193,14 +216,31 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         private void TimerEvent(object sender, ElapsedEventArgs e)
         {
-            if (groundServiceTicker == 0)
+            if (secondsToStop == 0)
             {
+                switch (trigger)
+                {
+                    case TimerTrigger.GroundService:
+                        RemoveJetway(true);
+                        break;
+
+                    case TimerTrigger.EndDeboarding:
+                        StopAmbiance();
+                        break;
+
+                    case TimerTrigger.Nothing:
+                        break;
+
+                    default:
+                        break;
+                }
+
                 eventTimer.Enabled = false;
-                RemoveJetway(true);
+                trigger = TimerTrigger.Nothing;
             }
             else
             {
-                groundServiceTicker--;
+                secondsToStop--;
             }
         }
 
