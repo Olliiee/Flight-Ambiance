@@ -111,7 +111,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
         private void OpenSoundProfiles_Click(object sender, EventArgs e)
         {
-            var sound = (Form)Program.serviceProvider.GetService((typeof(SoundProfileView)));
+            var sound = (Form)Program.ServiceProvider.GetService((typeof(SoundProfileView)));
             sound.ShowDialog();
         }
 

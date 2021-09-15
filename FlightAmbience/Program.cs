@@ -17,7 +17,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 {
     internal static class Program
     {
-        public static IServiceProvider serviceProvider { get; set; }
+        public static IServiceProvider ServiceProvider { get; set; }
 
         /// <summary>
         /// The main entry point for the application.
@@ -71,10 +71,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             var host = builder.Build();
 
             using var serviceScope = host.Services.CreateScope();
-            serviceProvider = serviceScope.ServiceProvider;
+            ServiceProvider = serviceScope.ServiceProvider;
             try
             {
-                var mainView = serviceProvider.GetRequiredService<MainView>();
+                var mainView = ServiceProvider.GetRequiredService<MainView>();
 
                 Application.Run(mainView);
             }
