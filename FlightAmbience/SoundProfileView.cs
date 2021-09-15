@@ -553,7 +553,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                     var newFile = new MediaFile()
                     {
                         Name = fileNames[i],
-                        Path = $@"{Directory.GetCurrentDirectory()}\Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}"
+                        Path = $@"Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}"
                     };
 
                     var isMusic = MessageBox.Show($"Is this a music file? {fileNames[i]}", "Question 1", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1046,7 +1046,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             var profileItem = await _profileRepository.GetProfileItemByIdAsync(itemId).ConfigureAwait(false);
 
             string profileName = ProfileList.GetItemText(ProfileList.SelectedItem);
-            string itemName = UsedFlightStatusItemsView.SelectedItems[0].Text;
+
             var mediafiles = await _profileRepository.GetMediaFilesByItemNameAsync(profileName, itemId).ConfigureAwait(false);
 
             MediaFileViewer.Items.Clear();

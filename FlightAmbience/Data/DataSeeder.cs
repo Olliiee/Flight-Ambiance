@@ -482,8 +482,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
         private async Task CreateBasicProfileAsync(FlightStatusProfile flightProfile)
         {
-            string path = Directory.GetCurrentDirectory();
-
             var profile = await _profileRepository.GetProfileByNameAsync("Default").ConfigureAwait(false);
             if (profile == null)
             {
@@ -497,9 +495,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 List<MediaFile> mediaFiles = new()
                 {
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 1", Path = $@"{path}\Profiles\Default\21_ground_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 2", Path = $@"{path}\Profiles\Default\22_ground_ambiance_2.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 3", Path = $@"{path}\Profiles\Default\23_ground_ambiance_3.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 1", Path = $@"\Profiles\Default\21_ground_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 2", Path = $@"\Profiles\Default\22_ground_ambiance_2.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 3", Path = $@"\Profiles\Default\23_ground_ambiance_3.ogg" },
                 };
 
                 var status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Boarding).FirstOrDefault();
@@ -516,9 +514,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board Cpt", Path = $@"{path}\Profiles\Default\01_announcement_cpt_eng.ogg" },
-                    new MediaFile() {Type = MediaType.Announcement, Name ="Doors in flight", Path = $@"{path}\Profiles\Default\12_doors_flight.ogg"},
-                    new MediaFile() {Type = MediaType.Announcement, Name ="Boarding completed", Path = $@"{path}\Profiles\Default\11_boarding_complete.ogg"}
+                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board Cpt", Path = $@"\Profiles\Default\01_announcement_cpt_eng.ogg" },
+                    new MediaFile() {Type = MediaType.Announcement, Name ="Doors in flight", Path = $@"\Profiles\Default\12_doors_flight.ogg"},
+                    new MediaFile() {Type = MediaType.Announcement, Name ="Boarding completed", Path = $@"\Profiles\Default\11_boarding_complete.ogg"}
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.PostBoarding).FirstOrDefault();
@@ -535,7 +533,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board and security", Path = $@"{path}\Profiles\Default\02_cabin_welcome.ogg" },
+                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board and security", Path = $@"\Profiles\Default\02_cabin_welcome.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.EngineStart).FirstOrDefault();
@@ -552,9 +550,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() {Type =  MediaType.Announcement, Name = "After Takeoff", Path = $@"{path}\Profiles\Default\03_cabin_announcement_inflight.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"{path}\Profiles\Default\31_flight_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"{path}\Profiles\Default\32_flight_ambiance_2.ogg" },
+                    new MediaFile() {Type =  MediaType.Announcement, Name = "After Takeoff", Path = $@"\Profiles\Default\03_cabin_announcement_inflight.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"\Profiles\Default\31_flight_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"\Profiles\Default\32_flight_ambiance_2.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.AfterTakeoff).FirstOrDefault();
@@ -571,8 +569,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"{path}\Profiles\Default\31_flight_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"{path}\Profiles\Default\32_flight_ambiance_2.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"\Profiles\Default\31_flight_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"\Profiles\Default\32_flight_ambiance_2.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Climbing).FirstOrDefault();
@@ -589,8 +587,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"{path}\Profiles\Default\31_flight_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"{path}\Profiles\Default\32_flight_ambiance_2.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"\Profiles\Default\31_flight_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"\Profiles\Default\32_flight_ambiance_2.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Cruise).FirstOrDefault();
@@ -607,8 +605,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                   new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"{path}\Profiles\Default\31_flight_ambiance_1.ogg" },
-                   new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"{path}\Profiles\Default\32_flight_ambiance_2.ogg" },
+                   new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"\Profiles\Default\31_flight_ambiance_1.ogg" },
+                   new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"\Profiles\Default\32_flight_ambiance_2.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Descent).FirstOrDefault();
@@ -625,9 +623,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"{path}\Profiles\Default\31_flight_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"{path}\Profiles\Default\32_flight_ambiance_2.ogg" },
-                    new MediaFile() { Type = MediaType.Announcement, Name = "Approach", Path = $@"{path}\Profiles\Default\13_cabin_prepare_landing.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 1", Path = $@"\Profiles\Default\31_flight_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Climbing 2", Path = $@"\Profiles\Default\32_flight_ambiance_2.ogg" },
+                    new MediaFile() { Type = MediaType.Announcement, Name = "Approach", Path = $@"\Profiles\Default\13_cabin_prepare_landing.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Approach).FirstOrDefault();
@@ -644,7 +642,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Announcement, Name = "After Landing", Path = $@"{path}\Profiles\Default\05_welcome_dest_eng.ogg" },
+                    new MediaFile() { Type = MediaType.Announcement, Name = "After Landing", Path = $@"\Profiles\Default\05_welcome_dest_eng.ogg" },
                 };
 
                 status = await _flightStatusRepository.GetFlightStatusByName(FlightStatusName.AfterLanding).ConfigureAwait(false);
@@ -661,7 +659,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Announcement, Name = "Parking", Path = $@"{path}\Profiles\Default\14_doors_park.ogg" },
+                    new MediaFile() { Type = MediaType.Announcement, Name = "Parking", Path = $@"\Profiles\Default\14_doors_park.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Parking).FirstOrDefault();
@@ -678,9 +676,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 1", Path = $@"{path}\Profiles\Default\21_ground_ambiance_1.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 2", Path = $@"{path}\Profiles\Default\22_ground_ambiance_2.ogg" },
-                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 3", Path = $@"{path}\Profiles\Default\23_ground_ambiance_3.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 1", Path = $@"\Profiles\Default\21_ground_ambiance_1.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 2", Path = $@"\Profiles\Default\22_ground_ambiance_2.ogg" },
+                    new MediaFile() { Type = MediaType.Ambiance, Name = "Boarding 3", Path = $@"\Profiles\Default\23_ground_ambiance_3.ogg" },
                 };
 
                 status = flightProfile.FlightStatus.Where(c => c.FlightStatusName == FlightStatusName.Deboarding).FirstOrDefault();
