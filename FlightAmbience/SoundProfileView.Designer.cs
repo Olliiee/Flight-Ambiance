@@ -57,8 +57,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ProfileItemData = new System.Windows.Forms.GroupBox();
             this.MediaFileViewer = new System.Windows.Forms.ListView();
             this.Id = new System.Windows.Forms.ColumnHeader();
-            this.FilePath = new System.Windows.Forms.ColumnHeader();
             this.FileName = new System.Windows.Forms.ColumnHeader();
+            this.FilePath = new System.Windows.Forms.ColumnHeader();
             this.DeleteMediaFile = new System.Windows.Forms.Button();
             this.AddNewMediaFile = new System.Windows.Forms.Button();
             this.AnnouncementMediaFile = new System.Windows.Forms.RadioButton();
@@ -66,6 +66,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.MusicMediaType = new System.Windows.Forms.RadioButton();
             this.AddMediaFile = new System.Windows.Forms.OpenFileDialog();
             this.NewProfileName = new System.Windows.Forms.TextBox();
+            this.PlayMedia = new System.Windows.Forms.Button();
             this.ProfileBox.SuspendLayout();
             this.ProfileItemData.SuspendLayout();
             this.SuspendLayout();
@@ -327,6 +328,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // ProfileItemData
             // 
+            this.ProfileItemData.Controls.Add(this.PlayMedia);
             this.ProfileItemData.Controls.Add(this.MediaFileViewer);
             this.ProfileItemData.Controls.Add(this.DeleteMediaFile);
             this.ProfileItemData.Controls.Add(this.AddNewMediaFile);
@@ -362,17 +364,17 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.Id.Text = "Id";
             this.Id.Width = 0;
             // 
-            // FilePath
-            // 
-            this.FilePath.DisplayIndex = 1;
-            this.FilePath.Text = "file path";
-            this.FilePath.Width = 120;
-            // 
             // FileName
             // 
             this.FileName.DisplayIndex = 2;
             this.FileName.Text = "file name";
             this.FileName.Width = 300;
+            // 
+            // FilePath
+            // 
+            this.FilePath.DisplayIndex = 1;
+            this.FilePath.Text = "file path";
+            this.FilePath.Width = 120;
             // 
             // DeleteMediaFile
             // 
@@ -443,6 +445,16 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.NewProfileName.Size = new System.Drawing.Size(144, 23);
             this.NewProfileName.TabIndex = 5;
             // 
+            // PlayMedia
+            // 
+            this.PlayMedia.Location = new System.Drawing.Point(129, 124);
+            this.PlayMedia.Name = "PlayMedia";
+            this.PlayMedia.Size = new System.Drawing.Size(43, 23);
+            this.PlayMedia.TabIndex = 7;
+            this.PlayMedia.Text = "Play";
+            this.PlayMedia.UseVisualStyleBackColor = true;
+            this.PlayMedia.Click += new System.EventHandler(this.PlayMedia_Click);
+            // 
             // SoundProfileView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -504,5 +516,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.Button ProfileItemDown;
         private System.Windows.Forms.Button ProfileItemUp;
         private System.Windows.Forms.TextBox NewProfileName;
+        private System.Windows.Forms.Button PlayMedia;
     }
 }

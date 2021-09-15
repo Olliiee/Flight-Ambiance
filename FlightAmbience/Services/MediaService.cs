@@ -51,6 +51,65 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         #region Public Methods
 
+        public async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, BoolExt IsDoorOpen, float volume)
+        {
+            audioFile = Directory.GetCurrentDirectory() + audioFile;
+            if (File.Exists(audioFile))
+            {
+                _logger.LogDebug($@"Playing ambiance {audioFile}");
+                if (Bass.BASS_ChannelIsActive(audioChannel) == BASSActive.BASS_ACTIVE_PLAYING)
+                {
+                    Bass.BASS_ChannelSlideAttribute(0, BASSAttribute.BASS_ATTRIB_VOL, 0f, 1000);
+                }
+
+                audioChannel = Bass.BASS_StreamCreateFile($@"{audioFile}", 0L, 0L, BASSFlag.BASS_MUSIC_AUTOFREE);
+
+                if (IsDoorOpen == BoolExt.False && await _settingsRepository.GetDoorEffect())
+                {
+                    _logger.LogDebug("Setting lowpass filter.");
+                    filter = Bass.BASS_ChannelSetFX(audioChannel, BASSFXType.BASS_FX_BFX_BQF, 0);
+
+                    BASS_BFX_BQF filterSettings = new();
+                    filterSettings.lFilter = BASSBFXBQF.BASS_BFX_BQF_LOWPASS;
+                    filterSettings.fCenter = await _settingsRepository.GetSoundLowPass().ConfigureAwait(false);
+                    filterSettings.fGain = await _settingsRepository.GetSoundLowPassGain().ConfigureAwait(false);
+                    filterSettings.lChannel = BASSFXChan.BASS_BFX_CHANALL;
+
+                    var result = Bass.BASS_FXSetParameters(filter, filterSettings);
+                    if (!result)
+                    {
+                        _logger.LogError($"BASS Error {Bass.BASS_ErrorGetCode()}");
+                    }
+
+                    volume -= 5;
+                }
+
+                Bass.BASS_ChannelSetAttribute(audioChannel, BASSAttribute.BASS_ATTRIB_VOL, volume);
+
+                if (Bass.BASS_ChannelIsActive(audioChannel) == BASSActive.BASS_ACTIVE_PLAYING)
+                {
+                    Bass.BASS_ChannelSlideAttribute(audioChannel, BASSAttribute.BASS_ATTRIB_VOL, volume, 1000);
+                    if (!Bass.BASS_ChannelPlay(audioChannel, false))
+                    {
+                        _logger.LogError($"Error playing file: {Bass.BASS_ErrorGetCode()}");
+                    }
+                }
+                else
+                {
+                    if (!Bass.BASS_ChannelPlay(audioChannel, false))
+                    {
+                        _logger.LogError($"Error playing file: {Bass.BASS_ErrorGetCode()}");
+                    }
+                }
+            }
+            else
+            {
+                _logger.LogError($@"Error file doesn't exists. {audioFile}");
+            }
+
+            return audioChannel;
+        }
+
         public void SetHandle(IntPtr Handle)
         {
             Bass.BASS_Init(-1, 44100, BASSInit.BASS_DEVICE_DEFAULT, Handle);
@@ -148,6 +207,18 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             StopSound(bassAnnouncementChannel);
         }
 
+        public void StopSound(int channel)
+        {
+            try
+            {
+                Bass.BASS_ChannelSlideAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, 0f, 1000);
+            }
+            catch (Exception)
+            {
+                _logger.LogError($"Error stopping channel.");
+            }
+        }
+
         #endregion Public Methods
 
         #region Private Methods
@@ -170,76 +241,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             await StartAmbiance(_profileItem);
             await StartMusic(_profileItem);
             _audioCheck.Start();
-        }
-
-        private async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, BoolExt IsDoorOpen, float volume)
-        {
-            if (File.Exists(audioFile))
-            {
-                _logger.LogDebug($@"Playing ambiance {audioFile}");
-                if (Bass.BASS_ChannelIsActive(audioChannel) == BASSActive.BASS_ACTIVE_PLAYING)
-                {
-                    Bass.BASS_ChannelSlideAttribute(0, BASSAttribute.BASS_ATTRIB_VOL, 0f, 1000);
-                }
-
-                audioChannel = Bass.BASS_StreamCreateFile($@"{audioFile}", 0L, 0L, BASSFlag.BASS_MUSIC_AUTOFREE);
-
-                if (IsDoorOpen == BoolExt.False && await _settingsRepository.GetDoorEffect())
-                {
-                    _logger.LogDebug("Setting lowpass filter.");
-                    filter = Bass.BASS_ChannelSetFX(audioChannel, BASSFXType.BASS_FX_BFX_BQF, 0);
-
-                    BASS_BFX_BQF filterSettings = new();
-                    filterSettings.lFilter = BASSBFXBQF.BASS_BFX_BQF_LOWPASS;
-                    filterSettings.fCenter = await _settingsRepository.GetSoundLowPass().ConfigureAwait(false);
-                    filterSettings.fGain = await _settingsRepository.GetSoundLowPassGain().ConfigureAwait(false);
-                    filterSettings.lChannel = BASSFXChan.BASS_BFX_CHANALL;
-
-                    var result = Bass.BASS_FXSetParameters(filter, filterSettings);
-                    if (!result)
-                    {
-                        _logger.LogError($"BASS Error {Bass.BASS_ErrorGetCode()}");
-                    }
-
-                    volume -= 5;
-                }
-
-                Bass.BASS_ChannelSetAttribute(audioChannel, BASSAttribute.BASS_ATTRIB_VOL, volume);
-
-                if (Bass.BASS_ChannelIsActive(audioChannel) == BASSActive.BASS_ACTIVE_PLAYING)
-                {
-                    Bass.BASS_ChannelSlideAttribute(audioChannel, BASSAttribute.BASS_ATTRIB_VOL, volume, 1000);
-                    if (!Bass.BASS_ChannelPlay(audioChannel, false))
-                    {
-                        _logger.LogError($"Error playing file: {Bass.BASS_ErrorGetCode()}");
-                    }
-                }
-                else
-                {
-                    if (!Bass.BASS_ChannelPlay(audioChannel, false))
-                    {
-                        _logger.LogError($"Error playing file: {Bass.BASS_ErrorGetCode()}");
-                    }
-                }
-            }
-            else
-            {
-                _logger.LogError($@"Error file doesn't exists. {audioFile}");
-            }
-
-            return audioChannel;
-        }
-
-        private void StopSound(int channel)
-        {
-            try
-            {
-                Bass.BASS_ChannelSlideAttribute(channel, BASSAttribute.BASS_ATTRIB_VOL, 0f, 1000);
-            }
-            catch (Exception)
-            {
-                _logger.LogError($"Error stopping channel.");
-            }
         }
 
         private async Task Wait()

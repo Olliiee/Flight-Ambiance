@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 
 using Org.Strausshome.FS.CrewSoundsNG.Models;
 using Org.Strausshome.FS.CrewSoundsNG.Repositories;
+using Org.Strausshome.FS.CrewSoundsNG.Services;
 
 using File = System.IO.File;
 
@@ -22,8 +23,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private readonly FlightStatusRepository _flightStatusRepository;
         private readonly ILogger<SoundProfileView> _logger;
         private readonly MediaFileRepository _mediaFileRepository;
+        private readonly MediaService _mediaService;
         private readonly ProfileRepository _profileRepository;
         private readonly SettingsRepository _settingsRepository;
+        private int soundChanel = 1;
 
         #endregion Private Fields
 
@@ -33,7 +36,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             SettingsRepository settingsRepository,
             FlightStatusRepository flightStatusRepository,
             ProfileRepository profileRepository,
-            MediaFileRepository mediaFileRepository)
+            MediaFileRepository mediaFileRepository,
+            MediaService mediaService)
         {
             InitializeComponent();
 
@@ -42,6 +46,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             _flightStatusRepository = flightStatusRepository;
             _profileRepository = profileRepository;
             _mediaFileRepository = mediaFileRepository;
+            _mediaService = mediaService;
         }
 
         #endregion Public Constructors
@@ -1074,5 +1079,29 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         }
 
         #endregion Private Methods
+
+        private async void PlayMedia_Click(object sender, EventArgs e)
+        {
+            if (MediaFileViewer.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            if (PlayMedia.Text == "Play")
+            {
+                string mediaId = MediaFileViewer.SelectedItems[0].Text;
+                var mediafileDetails = await _profileRepository.GetMediaDetails(Convert.ToInt32(mediaId)).ConfigureAwait(false);
+                float volume = Convert.ToSingle(await _settingsRepository.GetAmbianceVolume());
+
+                soundChanel = await _mediaService.PlayAudioFileAsync(@mediafileDetails.Path, 1, BoolExt.NotRequired, volume);
+
+                PlayMedia.Text = "Stop";
+            }
+            else
+            {
+                _mediaService.StopSound(soundChanel);
+                PlayMedia.Text = "Play";
+            }
+        }
     }
 }
