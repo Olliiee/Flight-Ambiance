@@ -4,13 +4,13 @@ This is a stand alone application for the Micrsoft Flight Simulator 2020. It bas
 ![Main](docimages/main.png)
 # Requirements
 * You need .NET 5 to run this app https://dotnet.microsoft.com/download/dotnet/5.0 or the SDK to build it.
-* You need some dlls from un4seen https://www.un4seen.com/ for the sound output:
+* For building this app you need some dlls from un4seen https://www.un4seen.com/ for the sound output:
     * bass.dll as the main library
     * BASS FX
     * BASS.Net
 
 # Installation
-You can run the app from everywhere, it's not necessary to move it to the community folder.
+It's stand alone. You can run the app from everywhere, it's not necessary to move it to the community folder.
 
 # Running the app
 ![Start](docimages/start.png)
@@ -21,4 +21,8 @@ The application comes with a simple sound profile for a jetliner. Start i.e. wit
 ## General settings
 ![Generalsettings](docimages/generalsettings.png)
 
-## Profile settings
+You can set the sound volumes for music, ambiance and announcments independently. To create a more realistic ambiance you can enable the door effect. With the preconfigured settings the announcements and ambiance sound like you here it through a closed door.
+
+## Sound profiles
+
+You can create a new profile or modify an existing one. 
