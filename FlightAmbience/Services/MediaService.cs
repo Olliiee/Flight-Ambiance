@@ -179,7 +179,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                     await Wait();
                 }
 
-                float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()), profileItem.FlightStatus.IsEngineRun);
+                float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetAnnouncementVolume()), profileItem.FlightStatus.IsEngineRun);
                 bassAnnouncementChannel = await PlayAudioFileAsync(file.Path, bassAnnouncementChannel, profileItem.FlightStatus.IsDoorOpen, volume);
             }
         }
