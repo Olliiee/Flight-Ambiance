@@ -51,6 +51,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             eventTimer.AutoReset = true;
         }
 
+        private void MainView_SetButton(string text)
+        {
+            throw new NotImplementedException();
+        }
+
         #endregion Public Constructors
 
         #region Public Delegates
@@ -109,7 +114,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void StopAmbiance()
         {
+            _logger.LogDebug($"Stopping ambiance");
             _mediaService.StopAll();
+            _flightSimService.CloseConnection();
         }
 
         #endregion Public Methods
@@ -159,6 +166,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                     // Last item? Stop the ambiance after 5 minutes.
                     if (currentSequence == profile.ProfileItems.Count)
                     {
+                        _logger.LogDebug($"<<<< Last profile enable timer >>>>");
                         secondsToStop = 300;
                         trigger = TimerTrigger.EndDeboarding;
                         eventTimer.Enabled = true;
