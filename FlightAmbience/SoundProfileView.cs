@@ -558,7 +558,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                     var newFile = new MediaFile()
                     {
                         Name = fileNames[i],
-                        Path = $@"Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}"
+                        Path = $@"\Profiles\{ProfileList.GetItemText(ProfileList.SelectedItem)}\{fileNames[i]}"
                     };
 
                     var isMusic = MessageBox.Show($"Is this a music file? {fileNames[i]}", "Question 1", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
@@ -1091,7 +1091,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 string mediaId = MediaFileViewer.SelectedItems[0].Text;
                 var mediafileDetails = await _profileRepository.GetMediaDetails(Convert.ToInt32(mediaId)).ConfigureAwait(false);
-                float volume = Convert.ToSingle(await _settingsRepository.GetAmbianceVolume());
+                float volume = Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()) / 10;
 
                 soundChanel = await _mediaService.PlayAudioFileAsync(@mediafileDetails.Path, 1, BoolExt.NotRequired, volume);
 
@@ -1102,6 +1102,12 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 _mediaService.StopSound(soundChanel);
                 PlayMedia.Text = "Play";
             }
+        }
+
+        private void SoundProfileView_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _mediaService.StopSound(soundChanel);
+            PlayMedia.Text = "Play";
         }
     }
 }
