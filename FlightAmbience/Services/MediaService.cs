@@ -166,6 +166,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         {
             var mediaFiles = profileItem.MediaFile.Where(m => m.Type == MediaType.Announcement).OrderBy(m => m.MediaFileId).ToList();
 
+            await Wait();
+
             foreach (var file in mediaFiles)
             {
                 StopSound(bassMusicChannel);
