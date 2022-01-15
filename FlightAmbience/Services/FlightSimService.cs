@@ -186,7 +186,29 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                 0.0f,
                 SimConnect.SIMCONNECT_UNUSED);
 
+            simconnect.AddToDataDefinition(DEFINITIONS.VelocityZ,
+                "Velocity Body Z",
+                "feet per second",
+                SIMCONNECT_DATATYPE.FLOAT64,
+                0.0f,
+                SimConnect.SIMCONNECT_UNUSED);
+
+            simconnect.AddToDataDefinition(DEFINITIONS.PushbackWait,
+                "Pushback Wait",
+                "Bool",
+                SIMCONNECT_DATATYPE.INT32, 0.0f,
+                SimConnect.SIMCONNECT_UNUSED);
+
+            simconnect.AddToDataDefinition(DEFINITIONS.FlightStatus,
+                "Pushback State",
+                "Enum",
+                SIMCONNECT_DATATYPE.INT32,
+                0.0f, SimConnect.
+                SIMCONNECT_UNUSED);
+
             simconnect.RegisterDataDefineStruct<FlightStatusStruct>(DEFINITIONS.FlightStatus);
+            simconnect.RegisterDataDefineStruct<double>(DEFINITIONS.VelocityZ);
+            simconnect.RegisterDataDefineStruct<int>(DEFINITIONS.PushbackWait);
             simconnect.RequestDataOnSimObject(RequestsEnum.RefreshDataRequest,
                                               DEFINITIONS.FlightStatus,
                                               0,
@@ -203,14 +225,24 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
             simconnect.MapClientEventToSimEvent(EventsEnum.TOGGLE_RAMPTRUCK, "TOGGLE_RAMPTRUCK");
         }
 
-        public void RemoveJetway(bool requestPushBack)
+        public void RemoveJetwayAsync(bool requestPushBack)
         {
             _logger.LogDebug("Toggle Jetway");
             TransmitEvent(EventsEnum.TOGGLE_JETWAY, 1);
 
             if (requestPushBack)
             {
+                _logger.LogDebug("Calling Tug and set speed to 0.");
                 TransmitEvent(EventsEnum.TOGGLE_PUSHBACK, 1);
+                SetData(DEFINITIONS.PushbackWait, 1);
+                SetData(DEFINITIONS.VelocityZ, 0);
+
+                for (int i = 0; i < 30; i++)
+                {
+                    SetData(DEFINITIONS.VelocityZ, 0);
+                    _logger.LogDebug("Set speed to 0.");
+                    Task.Delay(TimeSpan.FromSeconds(1)).Wait();
+                }
             }
         }
 

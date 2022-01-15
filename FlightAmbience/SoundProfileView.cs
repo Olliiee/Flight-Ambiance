@@ -1,16 +1,15 @@
-﻿using System;
-using System.Data;
-using System.IO;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
 using Org.Strausshome.FS.CrewSoundsNG.Models;
 using Org.Strausshome.FS.CrewSoundsNG.Repositories;
 using Org.Strausshome.FS.CrewSoundsNG.Services;
+
+using System;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 using File = System.IO.File;
 
@@ -21,6 +20,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         #region Private Fields
 
         private readonly FlightStatusRepository _flightStatusRepository;
+        private readonly FlightStatusService _flightStatusService;
         private readonly ILogger<SoundProfileView> _logger;
         private readonly MediaFileRepository _mediaFileRepository;
         private readonly MediaService _mediaService;
@@ -37,7 +37,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             FlightStatusRepository flightStatusRepository,
             ProfileRepository profileRepository,
             MediaFileRepository mediaFileRepository,
-            MediaService mediaService)
+            MediaService mediaService,
+            FlightStatusService flightStatusService)
         {
             InitializeComponent();
 
@@ -47,421 +48,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             _profileRepository = profileRepository;
             _mediaFileRepository = mediaFileRepository;
             _mediaService = mediaService;
+            _flightStatusService = flightStatusService;
         }
 
         #endregion Public Constructors
-
-        #region Public Methods
-
-        public async Task AddFlightStatusAsync(string name)
-        {
-            FlightStatusProfile flightProfile = new()
-            {
-                Name = name
-            };
-
-            flightProfile = await _flightStatusRepository.AddFlightStatusProfileAsync(flightProfile).ConfigureAwait(false);
-
-            Profile profile = new()
-            {
-                Name = name,
-                FlightProfile = flightProfile
-            };
-
-            profile = await _profileRepository.AddProfileAsync(profile).ConfigureAwait(false);
-
-            FlightStatus flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Boarding,
-                Ignore = false,
-                IsDoorOpen = BoolExt.True,
-                IsEngineRun = BoolExt.False,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 30,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 0,
-                SpeedOperator = Operator.Equal,
-                VerticalSpeed = 0,
-                VerticalOperator = Operator.Equal,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                IsParkingBrakeSet = BoolExt.True,
-                CallGroundServices = true,
-                Name = "Boarding",
-                Sequence = 1,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.PostBoarding,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.False,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 30,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 0,
-                SpeedOperator = Operator.Equal,
-                VerticalSpeed = 0,
-                VerticalOperator = Operator.Equal,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                IsParkingBrakeSet = BoolExt.True,
-                CallGroundServices = false,
-                Name = "Welcome on board",
-                Sequence = 2,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.EngineStart,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 30,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 0,
-                SpeedOperator = Operator.Equal,
-                VerticalSpeed = 0,
-                VerticalOperator = Operator.Equal,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Name = "After engine 1 start",
-                Sequence = 3,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Taxi,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 30,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 5,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = 10,
-                VerticalOperator = Operator.Less,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "Taxi to departure",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 4,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.AfterTakeoff,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 100,
-                RadioOperator = Operator.Greater,
-                GroundSpeed = 60,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Greater,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "After Take-Off",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 5,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.PassingTenUp,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 10000,
-                RadioOperator = Operator.Greater,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Greater,
-                Altitude = 10100,
-                AltitudeOperator = Operator.Greater,
-                SeatbeltsSignOn = true,
-                Name = "Passing 10.000ft climbing",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 6,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Climbing,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 12000,
-                RadioOperator = Operator.Greater,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Greater,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Greater,
-                SeatbeltsSignOn = false,
-                Name = "Climbing",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 7,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Cruise,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 12000,
-                RadioOperator = Operator.Greater,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Less,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Greater,
-                SeatbeltsSignOn = false,
-                Name = "Cruising",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 8,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Descent,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 12000,
-                RadioOperator = Operator.Greater,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = -200,
-                VerticalOperator = Operator.Less,
-                Altitude = 10000,
-                AltitudeOperator = Operator.Greater,
-                SeatbeltsSignOn = true,
-                Name = "Descending",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 9,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.PassingTenDown,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 12000,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = -200,
-                VerticalOperator = Operator.Less,
-                Altitude = 10100,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "Passing 10.000ft descending",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 10,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Approach,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.False,
-                RadioAltitude = 6000,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = -100,
-                VerticalOperator = Operator.Less,
-                Altitude = 6000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "Approach",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 11,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Landing,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.False,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 3000,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 150,
-                SpeedOperator = Operator.Greater,
-                VerticalSpeed = -100,
-                VerticalOperator = Operator.Less,
-                Altitude = 6000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "Landing",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 12,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.AfterLanding,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.True,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 100,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 60,
-                SpeedOperator = Operator.Less,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Less,
-                Altitude = 6000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = true,
-                Name = "After Landing",
-                IsParkingBrakeSet = BoolExt.False,
-                CallGroundServices = false,
-                Sequence = 13,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Parking,
-                Ignore = false,
-                IsDoorOpen = BoolExt.False,
-                IsEngineRun = BoolExt.False,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 100,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 0,
-                SpeedOperator = Operator.Equal,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Less,
-                Altitude = 6000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = false,
-                Name = "Parking",
-                IsParkingBrakeSet = BoolExt.True,
-                CallGroundServices = false,
-                Sequence = 14,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-
-            flightStatus = new()
-            {
-                FlightStatusName = FlightStatusName.Deboarding,
-                Ignore = false,
-                IsDoorOpen = BoolExt.True,
-                IsEngineRun = BoolExt.False,
-                IsOnGround = BoolExt.True,
-                IsGearDown = BoolExt.True,
-                RadioAltitude = 100,
-                RadioOperator = Operator.Less,
-                GroundSpeed = 0,
-                SpeedOperator = Operator.Equal,
-                VerticalSpeed = 100,
-                VerticalOperator = Operator.Less,
-                Altitude = 6000,
-                AltitudeOperator = Operator.Less,
-                SeatbeltsSignOn = false,
-                Name = "Deboarding",
-                IsParkingBrakeSet = BoolExt.True,
-                CallGroundServices = true,
-                Sequence = 15,
-                Profile = flightProfile
-            };
-
-            await _flightStatusRepository.AddFlightStatus(flightStatus);
-        }
-
-        #endregion Public Methods
 
         #region Private Methods
 
@@ -500,19 +90,20 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
 
             var profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false);
-            var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
+            var flightProfile = _flightStatusService.GetDefaultFlightStatus();
 
             var status = flightProfile.FlightStatus.Where(c => c.Name == AvFlightStatusItems.GetItemText(AvFlightStatusItems.SelectedItem)).FirstOrDefault();
 
             ProfileItem profileItem = new()
             {
-                FlightStatusId = status.FlightStatusId,
+                FlightStatus = status,
                 MediaFile = new System.Collections.Generic.List<MediaFile>(),
-                Sequence = profile.ProfileItems.Count + 1,
-                Profile = profile
+                Sequence = profile.ProfileItems.Count + 1
             };
 
-            await _profileRepository.AddProfileItemAsync(profileItem).ConfigureAwait(false);
+            profile.ProfileItems.Add(profileItem);
+
+            await _profileRepository.UpdateProfileAsync(profile).ConfigureAwait(false);
 
             UsedFlightStatusItemsView.Items.Clear();
             foreach (var item in profile.ProfileItems.OrderBy(c => c.Sequence))
@@ -605,7 +196,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 ResetFields();
                 AvFlightStatusItems.Items.Clear();
                 UsedFlightStatusItemsView.Items.Clear();
-                await AddFlightStatusAsync(NewProfileName.Text).ConfigureAwait(false);
+
+                profile = new()
+                {
+                    Name = NewProfileName.Text
+                };
+
+                await _profileRepository.AddProfileAsync(profile).ConfigureAwait(false);
+
                 var profiles = await _profileRepository.GetAllProfiles().ConfigureAwait(false);
                 ProfileList.Items.Clear();
                 ProfileList.Items.AddRange(profiles.Select(c => c.Name).ToArray());
@@ -650,6 +248,38 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             {
                 MediaFileViewer.Items.Remove(MediaFileViewer.SelectedItems[0]);
             }
+        }
+
+        private async void ExportProfile_ClickAsync(object sender, EventArgs e)
+        {
+            if (!Directory.Exists("export"))
+            {
+                Directory.CreateDirectory("export");
+            }
+
+            //ExportModel export = new()
+            //{
+            //    Profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false)
+            //};
+
+            //export.Status = await _flightStatusRepository.GetFlightStatusProfileAsync(export.Profile.FlightProfile.Name).ConfigureAwait(false);
+
+            //string jsonOutput = JsonConvert.SerializeObject(export);
+            //using StreamWriter writer = new StreamWriter($@"export\output.json");
+            //writer.Write(jsonOutput);
+            //writer.Flush();
+            //writer.Close();
+
+            //DirectoryInfo directoryInfo = new($@"Profiles\{export.Profile.Name}");
+            //FileInfo[] files = directoryInfo.GetFiles();
+
+            //foreach (var file in files)
+            //{
+            //    string path = Path.Combine($"export");
+            //    file.CopyTo(path, false);
+            //}
+
+            //ZipFile.CreateFromDirectory(@".\export", $@".\profile_{export.Profile.Name}.zip");
         }
 
         private async void ItemAltitude_KeyPress(object sender, KeyPressEventArgs e)
@@ -862,6 +492,30 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             await _profileRepository.UpdateMediaType(Convert.ToInt32(mediaId), MediaType.Music).ConfigureAwait(false);
         }
 
+        private async void PlayMedia_Click(object sender, EventArgs e)
+        {
+            if (MediaFileViewer.SelectedItems.Count != 1)
+            {
+                return;
+            }
+
+            if (PlayMedia.Text == "Play")
+            {
+                string mediaId = MediaFileViewer.SelectedItems[0].Text;
+                var mediafileDetails = await _profileRepository.GetMediaDetails(Convert.ToInt32(mediaId)).ConfigureAwait(false);
+                float volume = Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()) / 10;
+
+                soundChanel = await _mediaService.PlayAudioFileAsync(@mediafileDetails.Path, 1, BoolExt.NotRequired, volume);
+
+                PlayMedia.Text = "Stop";
+            }
+            else
+            {
+                _mediaService.StopSound(soundChanel);
+                PlayMedia.Text = "Play";
+            }
+        }
+
         private async void ProfileItemDown_Click(object sender, EventArgs e)
         {
             if (UsedFlightStatusItemsView.SelectedItems.Count != 1)
@@ -959,7 +613,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private async void ProfileList_SelectedIndexChanged(object sender, EventArgs e)
         {
             var profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false);
-            var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
+            var flightProfile = _flightStatusService.GetDefaultFlightStatus();
+            //var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
 
             UsedFlightStatusItemsView.Items.Clear();
             foreach (var item in profile.ProfileItems.OrderBy(c => c.Sequence))
@@ -1003,7 +658,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                     UsedFlightStatusItemsView.Items.Add(profileItemUpdated);
                 }
 
-                var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
+                var flightProfile = _flightStatusService.GetDefaultFlightStatus();
+                //var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
                 AvFlightStatusItems.Items.Clear();
                 foreach (var item in flightProfile.FlightStatus)
                 {
@@ -1032,6 +688,12 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             AmbianceMediaFile.Checked = false;
 
             MediaFileViewer.Items.Clear();
+        }
+
+        private void SoundProfileView_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _mediaService.StopSound(soundChanel);
+            PlayMedia.Text = "Play";
         }
 
         private async void SoundProfileView_LoadAsync(object sender, EventArgs e)
@@ -1079,35 +741,5 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         }
 
         #endregion Private Methods
-
-        private async void PlayMedia_Click(object sender, EventArgs e)
-        {
-            if (MediaFileViewer.SelectedItems.Count != 1)
-            {
-                return;
-            }
-
-            if (PlayMedia.Text == "Play")
-            {
-                string mediaId = MediaFileViewer.SelectedItems[0].Text;
-                var mediafileDetails = await _profileRepository.GetMediaDetails(Convert.ToInt32(mediaId)).ConfigureAwait(false);
-                float volume = Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()) / 10;
-
-                soundChanel = await _mediaService.PlayAudioFileAsync(@mediafileDetails.Path, 1, BoolExt.NotRequired, volume);
-
-                PlayMedia.Text = "Stop";
-            }
-            else
-            {
-                _mediaService.StopSound(soundChanel);
-                PlayMedia.Text = "Play";
-            }
-        }
-
-        private void SoundProfileView_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            _mediaService.StopSound(soundChanel);
-            PlayMedia.Text = "Play";
-        }
     }
 }

@@ -40,8 +40,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Repositories
 
                 return profile;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Error adding new flight status.");
                 throw;
             }
         }

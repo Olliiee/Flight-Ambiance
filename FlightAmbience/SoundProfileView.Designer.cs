@@ -67,6 +67,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.MusicMediaType = new System.Windows.Forms.RadioButton();
             this.AddMediaFile = new System.Windows.Forms.OpenFileDialog();
             this.NewProfileName = new System.Windows.Forms.TextBox();
+            this.ImportProfile = new System.Windows.Forms.Button();
+            this.ExportProfile = new System.Windows.Forms.Button();
             this.ProfileBox.SuspendLayout();
             this.ProfileItemData.SuspendLayout();
             this.SuspendLayout();
@@ -74,7 +76,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // ProfileList
             // 
             this.ProfileList.FormattingEnabled = true;
-            this.ProfileList.Location = new System.Drawing.Point(13, 13);
+            this.ProfileList.Location = new System.Drawing.Point(13, 48);
             this.ProfileList.Name = "ProfileList";
             this.ProfileList.Size = new System.Drawing.Size(203, 23);
             this.ProfileList.TabIndex = 0;
@@ -82,7 +84,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // AddNewProfile
             // 
-            this.AddNewProfile.Location = new System.Drawing.Point(445, 12);
+            this.AddNewProfile.Location = new System.Drawing.Point(445, 47);
             this.AddNewProfile.Name = "AddNewProfile";
             this.AddNewProfile.Size = new System.Drawing.Size(75, 24);
             this.AddNewProfile.TabIndex = 1;
@@ -121,7 +123,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ProfileBox.Controls.Add(this.ItemRadioAltitude);
             this.ProfileBox.Controls.Add(this.ItemVerticalSpeed);
             this.ProfileBox.Controls.Add(this.label10);
-            this.ProfileBox.Location = new System.Drawing.Point(16, 42);
+            this.ProfileBox.Location = new System.Drawing.Point(16, 77);
             this.ProfileBox.Name = "ProfileBox";
             this.ProfileBox.Size = new System.Drawing.Size(504, 320);
             this.ProfileBox.TabIndex = 3;
@@ -335,7 +337,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ProfileItemData.Controls.Add(this.AnnouncementMediaFile);
             this.ProfileItemData.Controls.Add(this.AmbianceMediaFile);
             this.ProfileItemData.Controls.Add(this.MusicMediaType);
-            this.ProfileItemData.Location = new System.Drawing.Point(16, 368);
+            this.ProfileItemData.Location = new System.Drawing.Point(16, 403);
             this.ProfileItemData.Name = "ProfileItemData";
             this.ProfileItemData.Size = new System.Drawing.Size(504, 162);
             this.ProfileItemData.TabIndex = 4;
@@ -450,16 +452,37 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // NewProfileName
             // 
-            this.NewProfileName.Location = new System.Drawing.Point(295, 12);
+            this.NewProfileName.Location = new System.Drawing.Point(295, 47);
             this.NewProfileName.Name = "NewProfileName";
             this.NewProfileName.Size = new System.Drawing.Size(144, 23);
             this.NewProfileName.TabIndex = 5;
+            // 
+            // ImportProfile
+            // 
+            this.ImportProfile.Location = new System.Drawing.Point(13, 13);
+            this.ImportProfile.Name = "ImportProfile";
+            this.ImportProfile.Size = new System.Drawing.Size(75, 23);
+            this.ImportProfile.TabIndex = 6;
+            this.ImportProfile.Text = "Import";
+            this.ImportProfile.UseVisualStyleBackColor = true;
+            // 
+            // ExportProfile
+            // 
+            this.ExportProfile.Location = new System.Drawing.Point(141, 13);
+            this.ExportProfile.Name = "ExportProfile";
+            this.ExportProfile.Size = new System.Drawing.Size(75, 23);
+            this.ExportProfile.TabIndex = 7;
+            this.ExportProfile.Text = "Export";
+            this.ExportProfile.UseVisualStyleBackColor = true;
+            this.ExportProfile.Click += new System.EventHandler(this.ExportProfile_ClickAsync);
             // 
             // SoundProfileView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(531, 538);
+            this.ClientSize = new System.Drawing.Size(531, 583);
+            this.Controls.Add(this.ExportProfile);
+            this.Controls.Add(this.ImportProfile);
             this.Controls.Add(this.NewProfileName);
             this.Controls.Add(this.ProfileItemData);
             this.Controls.Add(this.ProfileBox);
@@ -518,5 +541,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.Button ProfileItemUp;
         private System.Windows.Forms.TextBox NewProfileName;
         private System.Windows.Forms.Button PlayMedia;
+        private System.Windows.Forms.Button ImportProfile;
+        private System.Windows.Forms.Button ExportProfile;
     }
 }

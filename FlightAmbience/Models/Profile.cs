@@ -11,6 +11,5 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Models
         public string Name { get; set; }
 
         public List<ProfileItem> ProfileItems { get; set; }
-        public FlightStatusProfile FlightProfile { get; set; }
     }
 }

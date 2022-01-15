@@ -4,14 +4,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Microsoft.Extensions.Logging;
-using Microsoft.FlightSimulator.SimConnect;
 
 using Org.Strausshome.FS.CrewSoundsNG.Data;
 using Org.Strausshome.FS.CrewSoundsNG.Models;
 using Org.Strausshome.FS.CrewSoundsNG.Repositories;
 using Org.Strausshome.FS.CrewSoundsNG.Services;
-
-using static Org.Strausshome.FS.CrewSoundsNG.Services.FlightSimService;
 
 namespace Org.Strausshome.FS.CrewSoundsNG
 {

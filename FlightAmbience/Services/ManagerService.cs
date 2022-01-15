@@ -1,12 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
-
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.FlightSimulator.SimConnect;
 
 using Org.Strausshome.FS.CrewSoundsNG.Models;
+
+using System;
+using System.Linq;
+using System.Timers;
 
 namespace Org.Strausshome.FS.CrewSoundsNG.Services
 {
@@ -19,21 +18,15 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         private readonly ILogger<ManagerService> _logger;
         private readonly MediaService _mediaService;
 
+        private bool callGroundServices;
         private bool connectionInit;
         private int currentSequence;
-        private bool running;
-
-        #region groundservices
-
-        private bool groundServicesActive;
-        private bool callGroundServices;
         private DateTime groundServiceCalledTime = DateTime.Now.AddMinutes(-60);
+        private bool groundServicesActive;
+        private Profile profile;
+        private bool running;
         private int secondsToStop;
         private TimerTrigger trigger;
-
-        #endregion groundservices
-
-        private Profile profile;
 
         #endregion Private Fields
 
@@ -128,30 +121,26 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
         {
             if (profile != null)
             {
-                var item = profile.ProfileItems.Where(c => c.Sequence == currentSequence).FirstOrDefault();
-                if (item != null)
+                var profileItem = profile.ProfileItems.Where(c => c.Sequence == currentSequence).FirstOrDefault();
+                if (profileItem != null)
                 {
-                    var flightStatus = profile.FlightProfile.FlightStatus
-                        .Where(f => f.FlightStatusName == item.FlightStatus.FlightStatusName)
-                        .FirstOrDefault();
-
-                    FlightItem?.Invoke(item);
-                    TextUpdater?.Invoke($"{flightStatus.Name} - {currentSequence}");
+                    FlightItem?.Invoke(profileItem);
+                    TextUpdater?.Invoke($"{profileItem.FlightStatus.Name} - {currentSequence}");
 
                     // Profile item is set to request the ground services.
-                    if (flightStatus.CallGroundServices && !groundServicesActive && !CurrentFlightSimInfo.IsDoorOpen && callGroundServices)
+                    if (profileItem.FlightStatus.CallGroundServices && !groundServicesActive && !CurrentFlightSimInfo.IsDoorOpen && callGroundServices)
                     {
                         CallGroundServices();
                     }
 
-                    if (AmbianceService.CheckForNextItem(CurrentFlightSimInfo, flightStatus))
+                    if (AmbianceService.CheckForNextItem(CurrentFlightSimInfo, profileItem.FlightStatus))
                     {
                         _logger.LogDebug($"<<<< Next profile item {currentSequence} >>>>");
-                        _mediaService.SetProfileItem(item);
+                        _mediaService.SetProfileItem(profileItem);
 
                         // This must be sync, don't add await. It plays over and over the media files.
-                        _mediaService.StartAnnouncement(item);
-                        TextUpdater?.Invoke($"{flightStatus.Name} - {currentSequence}");
+                        _mediaService.StartAnnouncement(profileItem);
+                        TextUpdater?.Invoke($"{profileItem.FlightStatus.Name} - {currentSequence}");
                         currentSequence++;
                         groundServicesActive = false;
 

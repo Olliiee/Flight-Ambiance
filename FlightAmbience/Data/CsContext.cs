@@ -17,8 +17,5 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
             => options.UseSqlite("Data Source=FlightAmbiance.db");
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder options)
-        //    => options.UseSqlite(ConfigurationManager.ConnectionStrings["CrewSounds"].ConnectionString);
     }
 }

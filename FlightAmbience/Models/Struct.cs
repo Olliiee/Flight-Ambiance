@@ -16,6 +16,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Models
         GenericData,
         ExitTypeStruct,
         ExitStruct,
+        VelocityZ,
+        PushbackWait
     }
 
     public enum EventsEnum

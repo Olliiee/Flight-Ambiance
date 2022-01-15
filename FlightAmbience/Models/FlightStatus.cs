@@ -30,7 +30,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Models
 
         public string Name { get; set; }
         public FlightStatusName FlightStatusName { get; set; }
-        public FlightStatusProfile Profile { get; set; }
         public bool Ignore { get; set; }
         public BoolExt IsDoorOpen { get; set; }
         public BoolExt IsEngineRun { get; set; }
