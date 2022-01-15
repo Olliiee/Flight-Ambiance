@@ -48,7 +48,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
             {
                 profile = new()
                 {
-                    Name = "Default FlyByWire A32NX"
+                    Name = "Default"
                 };
 
                 //profile = await _flightStatusRepository.AddFlightStatusProfileAsync(profile).ConfigureAwait(false);
@@ -475,7 +475,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
             {
                 profile = new()
                 {
-                    Name = "Default FlyByWire A32NX",
+                    Name = "Default",
                     ProfileItems = new()
                 };
 
@@ -499,9 +499,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Data
 
                 mediaFiles = new List<MediaFile>()
                 {
-                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board Cpt", Path = $@"\Profiles\Default\01_announcement_cpt_eng.ogg" },
+                    new MediaFile() {Type = MediaType.Announcement, Name ="Boarding completed", Path = $@"\Profiles\Default\11_boarding_complete.ogg"},
                     new MediaFile() {Type = MediaType.Announcement, Name ="Doors in flight", Path = $@"\Profiles\Default\12_doors_flight.ogg"},
-                    new MediaFile() {Type = MediaType.Announcement, Name ="Boarding completed", Path = $@"\Profiles\Default\11_boarding_complete.ogg"}
+                    new MediaFile() {Type =  MediaType.Announcement, Name = "Welcome on board Cpt", Path = $@"\Profiles\Default\01_announcement_cpt_eng.ogg" }
                 };
 
                 item = new()

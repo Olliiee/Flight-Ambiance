@@ -51,7 +51,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         #region Public Methods
 
-        public async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, BoolExt IsDoorOpen, float volume)
+        public async Task<int> PlayAudioFileAsync(string audioFile, int audioChannel, BoolExt IsDoorOpen, float volume, AudioType audioType)
         {
             audioFile = Directory.GetCurrentDirectory() + audioFile;
             if (File.Exists(audioFile))
@@ -81,7 +81,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                         _logger.LogError($"BASS Error {Bass.BASS_ErrorGetCode()}");
                     }
 
-                    volume -= 5;
+                    if (audioType != AudioType.Music)
+                    {
+                        volume -= 5;
+                    }
                 }
 
                 Bass.BASS_ChannelSetAttribute(audioChannel, BASSAttribute.BASS_ATTRIB_VOL, volume);
@@ -157,7 +160,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                 if (Bass.BASS_ChannelIsActive(bassAmbianceChannel) == BASSActive.BASS_ACTIVE_STOPPED)
                 {
                     float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetAmbianceVolume()), profileItem.FlightStatus.IsEngineRun);
-                    bassAmbianceChannel = await PlayAudioFileAsync(mediaFile.Path, bassAmbianceChannel, profileItem.FlightStatus.IsDoorOpen, volume);
+                    bassAmbianceChannel = await PlayAudioFileAsync(mediaFile.Path, bassAmbianceChannel, profileItem.FlightStatus.IsDoorOpen, volume, AudioType.Ambiance);
                 }
             }
         }
@@ -182,7 +185,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                 }
 
                 float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetAnnouncementVolume()), profileItem.FlightStatus.IsEngineRun);
-                bassAnnouncementChannel = await PlayAudioFileAsync(file.Path, bassAnnouncementChannel, profileItem.FlightStatus.IsDoorOpen, volume);
+                bassAnnouncementChannel = await PlayAudioFileAsync(file.Path, bassAnnouncementChannel, profileItem.FlightStatus.IsDoorOpen, volume, AudioType.Announcement);
             }
         }
 
@@ -197,7 +200,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
                 if (Bass.BASS_ChannelIsActive(bassMusicChannel) == BASSActive.BASS_ACTIVE_STOPPED)
                 {
                     float volume = GetVolume(Convert.ToSingle(await _settingsRepository.GetMusicVolume()), profileItem.FlightStatus.IsEngineRun);
-                    bassMusicChannel = await PlayAudioFileAsync(mediaFile.Path, bassMusicChannel, profileItem.FlightStatus.IsDoorOpen, volume);
+                    bassMusicChannel = await PlayAudioFileAsync(mediaFile.Path, bassMusicChannel, BoolExt.False, volume, AudioType.Music);
                 }
             }
         }

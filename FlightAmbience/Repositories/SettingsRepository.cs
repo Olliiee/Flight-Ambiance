@@ -164,8 +164,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Repositories
                 var setting = await _csContext.Settings.Where(setting => setting.Setting == SettingType.Music).FirstOrDefaultAsync().ConfigureAwait(false);
                 if (setting == null)
                 {
-                    await SetMusicVolume(5);
-                    return 5;
+                    await SetMusicVolume(15);
+                    return 15;
                 }
                 else
                 {
@@ -175,7 +175,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Repositories
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error reading setting");
-                return 5;
+                return 15;
             }
         }
 
