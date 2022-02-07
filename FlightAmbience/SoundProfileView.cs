@@ -29,6 +29,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private readonly MediaService _mediaService;
         private readonly ProfileRepository _profileRepository;
         private readonly SettingsRepository _settingsRepository;
+        private readonly ImportExportService _importExportService;
         private int soundChanel = 1;
 
         #endregion Private Fields
@@ -41,7 +42,9 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             ProfileRepository profileRepository,
             MediaFileRepository mediaFileRepository,
             MediaService mediaService,
-            FlightStatusService flightStatusService)
+            FlightStatusService flightStatusService,
+            ImportExportService importExportService
+            )
         {
             InitializeComponent();
 
@@ -52,6 +55,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             _mediaFileRepository = mediaFileRepository;
             _mediaService = mediaService;
             _flightStatusService = flightStatusService;
+            _importExportService = importExportService;
         }
 
         #endregion Public Constructors
@@ -253,6 +257,51 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
         }
 
+        private async void ImportProfile_Click(object sender, EventArgs e)
+        {
+            ImportProfileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            var result = ImportProfileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                if (!Directory.Exists("import"))
+                {
+                    Directory.CreateDirectory("import");
+                }
+
+                ZipFile.ExtractToDirectory(ImportProfileDialog.FileName, "import");
+
+                using StreamReader reader = new($@"import\profile.json");
+                var content = reader.ReadToEnd();
+                reader.Close();
+                var profileData = JsonConvert.DeserializeObject<ExportProfile>(content);
+
+                string profileDir = $@"Profiles\{profileData.Name}";
+
+                if (Directory.Exists(profileDir))
+                {
+                    profileDir += $"_{DateTime.Now:ddMMyyyyHHmmss}";
+                    Directory.CreateDirectory(profileDir);
+                }
+                else
+                {
+                    Directory.CreateDirectory(profileDir);
+                }
+
+                File.Delete($@"import\profile.json");
+                var files = Directory.GetFiles("import");
+
+                foreach (var file in files)
+                {
+                    string fileName = System.IO.Path.GetFileName(file);
+                    File.Move($@"{file}", $@"{profileDir}\{fileName}");
+                }
+
+                await _profileRepository.AddProfileAsync(_importExportService.CreateImport(profileData)).ConfigureAwait(false);
+
+                Directory.Delete("import", true);
+            }
+        }
+
         private async void ExportProfile_ClickAsync(object sender, EventArgs e)
         {
             if (ProfileList.SelectedIndex < 0)
@@ -261,25 +310,24 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
 
             bool result = true;
+
             _logger.LogDebug($"Creating export for profile {ProfileList.GetItemText(ProfileList.SelectedItem)}");
+
             if (!Directory.Exists("export"))
             {
                 Directory.CreateDirectory("export");
             }
 
-            ExportModel export = new()
-            {
-                Profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false)
-            };
+            var profile = await _profileRepository.GetProfileByNameForExportAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false);
 
-            string jsonOutput = JsonConvert.SerializeObject(export);
+            string jsonOutput = JsonConvert.SerializeObject(_importExportService.CreateExport(profile));
             _logger.LogDebug($"Writing profile as JSON {jsonOutput}");
-            using StreamWriter writer = new StreamWriter($@"export\output.json");
+            using StreamWriter writer = new($@"export\profile.json");
             writer.Write(jsonOutput);
             writer.Flush();
             writer.Close();
 
-            DirectoryInfo directoryInfo = new($@"Profiles\{export.Profile.Name}");
+            DirectoryInfo directoryInfo = new($@"Profiles\{profile.Name}");
             FileInfo[] files = directoryInfo.GetFiles();
 
             foreach (var file in files)
@@ -299,14 +347,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
             try
             {
-                if (File.Exists($@".\profile_{export.Profile.Name}.zip"))
+                if (File.Exists($@".\profile_{profile.Name}.zip"))
                 {
-                    File.Delete($@".\profile_{export.Profile.Name}.zip");
+                    File.Delete($@".\profile_{profile.Name}.zip");
                 }
 
-                ZipFile.CreateFromDirectory(@".\export", $@".\profile_{export.Profile.Name}.zip");
+                ZipFile.CreateFromDirectory(@".\export", $@".\profile_{profile.Name}.zip");
 
-                _logger.LogDebug($"Export file profile_{export.Profile.Name}.zip created");
+                _logger.LogDebug($"Export file profile_{profile.Name}.zip created");
             }
             catch (Exception ex)
             {
@@ -316,11 +364,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
             if (result)
             {
-                MessageBox.Show($"Profile exported to profile_{export.Profile.Name}.zip", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"Profile exported to profile_{profile.Name}.zip", "Export", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             else
             {
-                MessageBox.Show($"Unable to export profile to profile_{export.Profile.Name}.zip", "Export", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Unable to export profile to profile_{profile.Name}.zip", "Export", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             Directory.Delete("export", true);

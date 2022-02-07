@@ -60,6 +60,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                  services.AddSingleton<FlightSimService>();
                  services.AddSingleton<MediaService>();
                  services.AddSingleton<FlightStatusService>();
+                 services.AddSingleton<ImportExportService>();
                  services.AddLogging(loggingBuilder =>
                   {
                       // configure Logging with NLog

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -99,6 +100,16 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
         private async void MainView_ShownAsync(object sender, EventArgs e)
         {
+            if (Directory.Exists("import"))
+            {
+                Directory.Delete("import", true);
+            }
+
+            if (Directory.Exists("export"))
+            {
+                Directory.Delete("export", true);
+            }
+
             LoadingLabel.Text = _textContent.Loading;
             LoadingDialog.Visible = true;
             Application.DoEvents();

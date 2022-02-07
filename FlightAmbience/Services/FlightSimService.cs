@@ -268,7 +268,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Services
 
         public void TriggerReceive()
         {
-            simconnect.ReceiveMessage();
+            try
+            {
+                simconnect.ReceiveMessage();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error reading simulator data.");
+            }
         }
 
         #endregion Public Methods

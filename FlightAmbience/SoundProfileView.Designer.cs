@@ -69,6 +69,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.NewProfileName = new System.Windows.Forms.TextBox();
             this.ImportProfile = new System.Windows.Forms.Button();
             this.ExportProfile = new System.Windows.Forms.Button();
+            this.ImportProfileDialog = new System.Windows.Forms.OpenFileDialog();
             this.ProfileBox.SuspendLayout();
             this.ProfileItemData.SuspendLayout();
             this.SuspendLayout();
@@ -465,6 +466,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ImportProfile.TabIndex = 6;
             this.ImportProfile.Text = "Import";
             this.ImportProfile.UseVisualStyleBackColor = true;
+            this.ImportProfile.Click += new System.EventHandler(this.ImportProfile_Click);
             // 
             // ExportProfile
             // 
@@ -475,6 +477,11 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ExportProfile.Text = "Export";
             this.ExportProfile.UseVisualStyleBackColor = true;
             this.ExportProfile.Click += new System.EventHandler(this.ExportProfile_ClickAsync);
+            // 
+            // ImportProfileDialog
+            // 
+            this.ImportProfileDialog.Filter = "Profile|*.zip";
+            this.ImportProfileDialog.Title = "Import Profile";
             // 
             // SoundProfileView
             // 
@@ -543,5 +550,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.Button PlayMedia;
         private System.Windows.Forms.Button ImportProfile;
         private System.Windows.Forms.Button ExportProfile;
+        private System.Windows.Forms.OpenFileDialog ImportProfileDialog;
     }
 }

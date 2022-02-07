@@ -77,6 +77,19 @@ namespace Org.Strausshome.FS.CrewSoundsNG.Repositories
             return profile;
         }
 
+        public async Task<Profile> GetProfileByNameForExportAsync(string name)
+        {
+            var profile = await _csContext.Profiles.Where(profile => profile.Name == name)
+                .Include(profile => profile.ProfileItems)
+                    .ThenInclude(item => item.FlightStatus)
+                .Include(profile => profile.ProfileItems)
+                    .ThenInclude(item => item.MediaFile)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            return profile;
+        }
+
         public async Task<ProfileItem> GetProfileItemByIdAsync(int id)
         {
             return await _csContext.ProfileItems
