@@ -29,6 +29,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SoundProfileView));
             this.ProfileList = new System.Windows.Forms.ComboBox();
             this.AddNewProfile = new System.Windows.Forms.Button();
             this.AvFlightStatusItems = new System.Windows.Forms.ListBox();
@@ -495,6 +496,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.Controls.Add(this.ProfileBox);
             this.Controls.Add(this.AddNewProfile);
             this.Controls.Add(this.ProfileList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SoundProfileView";
             this.Text = "Audio Pfrofiles";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SoundProfileView_FormClosing);

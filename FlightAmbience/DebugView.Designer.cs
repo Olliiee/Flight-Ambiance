@@ -29,6 +29,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DebugView));
             this.DebugPanel = new System.Windows.Forms.Panel();
             this.ItemIsParkingBrakeSet = new System.Windows.Forms.CheckBox();
             this.ItemIsGearDown = new System.Windows.Forms.CheckBox();
@@ -431,6 +432,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 339);
             this.Controls.Add(this.DebugPanel);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DebugView";
             this.Text = "Debug Sim Infos";
             this.DebugPanel.ResumeLayout(false);
