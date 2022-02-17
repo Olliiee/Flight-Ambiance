@@ -133,10 +133,22 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             debug.ShowDialog();
         }
 
-        private void OpenSettings_Click(object sender, EventArgs e)
+        private async void OpenSettings_Click(object sender, EventArgs e)
         {
             var settings = (Form)Program.ServiceProvider.GetService((typeof(SettingsView)));
             settings.ShowDialog();
+
+            LoadingDialog.Visible = true;
+            Application.DoEvents();
+            ProfileSelect.Items.Clear();
+
+            var profiles = await _profileRepository.GetAllProfiles();
+            foreach (var profile in profiles)
+            {
+                ProfileSelect.Items.Add(profile.Name);
+            }
+
+            LoadingDialog.Visible = false;
         }
 
         private async void StartSim_Click(object sender, EventArgs e)

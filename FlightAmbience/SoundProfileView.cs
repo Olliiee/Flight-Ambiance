@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using Microsoft.Extensions.Logging;
@@ -706,7 +707,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         {
             var profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false);
             var flightProfile = _flightStatusService.GetDefaultFlightStatus();
-            //var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
 
             UsedFlightStatusItemsView.Items.Clear();
             foreach (var item in profile.ProfileItems.OrderBy(c => c.Sequence))
@@ -751,7 +751,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 }
 
                 var flightProfile = _flightStatusService.GetDefaultFlightStatus();
-                //var flightProfile = await _flightStatusRepository.GetFlightStatusProfileAsync(profile.FlightProfile.Name).ConfigureAwait(false);
+
                 AvFlightStatusItems.Items.Clear();
                 foreach (var item in flightProfile.FlightStatus)
                 {
@@ -833,5 +833,44 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         }
 
         #endregion Private Methods
+
+        #region Methods
+
+        private void CloseNamePanel_Click(object sender, EventArgs e)
+        {
+            SetProfileNamePanel.Visible = false;
+        }
+
+        #endregion Methods
+
+        private void Rename_Click(object sender, EventArgs e)
+        {
+            RenameProfile.Text = ProfileList.GetItemText(ProfileList.SelectedItem);
+            SetProfileNamePanel.Visible = true;
+        }
+
+        private async void SaveProfileName_ClickAsync(object sender, EventArgs e)
+        {
+            if (ProfileList.SelectedIndex < 0 || RenameProfile.Text == string.Empty)
+            {
+                return;
+            }
+
+            var profile = await _profileRepository.GetProfileByNameAsync(ProfileList.GetItemText(ProfileList.SelectedItem)).ConfigureAwait(false);
+            profile.Name = RenameProfile.Text;
+
+            if (await _profileRepository.UpdateProfileAsync(profile).ConfigureAwait(false))
+            {
+                var profiles = await _profileRepository.GetAllProfiles().ConfigureAwait(false);
+                ProfileList.Items.Clear();
+                ProfileList.Items.AddRange(profiles.Select(c => c.Name).ToArray());
+            }
+            else
+            {
+                MessageBox.Show("Unable to update the profile.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            SetProfileNamePanel.Visible = false;
+        }
     }
 }

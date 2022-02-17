@@ -71,8 +71,14 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ImportProfile = new System.Windows.Forms.Button();
             this.ExportProfile = new System.Windows.Forms.Button();
             this.ImportProfileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.SetProfileNamePanel = new System.Windows.Forms.Panel();
+            this.SaveProfileName = new System.Windows.Forms.Button();
+            this.RenameProfile = new System.Windows.Forms.TextBox();
+            this.CloseNamePanel = new System.Windows.Forms.Label();
+            this.Rename = new System.Windows.Forms.Button();
             this.ProfileBox.SuspendLayout();
             this.ProfileItemData.SuspendLayout();
+            this.SetProfileNamePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // ProfileList
@@ -105,6 +111,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // ProfileBox
             // 
+            this.ProfileBox.Controls.Add(this.SetProfileNamePanel);
             this.ProfileBox.Controls.Add(this.ProfileItemDown);
             this.ProfileBox.Controls.Add(this.ProfileItemUp);
             this.ProfileBox.Controls.Add(this.UsedFlightStatusItemsView);
@@ -471,7 +478,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // ExportProfile
             // 
-            this.ExportProfile.Location = new System.Drawing.Point(141, 13);
+            this.ExportProfile.Location = new System.Drawing.Point(94, 13);
             this.ExportProfile.Name = "ExportProfile";
             this.ExportProfile.Size = new System.Drawing.Size(75, 23);
             this.ExportProfile.TabIndex = 7;
@@ -484,11 +491,63 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ImportProfileDialog.Filter = "Profile|*.zip";
             this.ImportProfileDialog.Title = "Import Profile";
             // 
+            // SetProfileNamePanel
+            // 
+            this.SetProfileNamePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.SetProfileNamePanel.Controls.Add(this.CloseNamePanel);
+            this.SetProfileNamePanel.Controls.Add(this.RenameProfile);
+            this.SetProfileNamePanel.Controls.Add(this.SaveProfileName);
+            this.SetProfileNamePanel.Location = new System.Drawing.Point(129, 78);
+            this.SetProfileNamePanel.Name = "SetProfileNamePanel";
+            this.SetProfileNamePanel.Size = new System.Drawing.Size(200, 82);
+            this.SetProfileNamePanel.TabIndex = 54;
+            this.SetProfileNamePanel.Visible = false;
+            // 
+            // SaveProfileName
+            // 
+            this.SaveProfileName.Location = new System.Drawing.Point(65, 52);
+            this.SaveProfileName.Name = "SaveProfileName";
+            this.SaveProfileName.Size = new System.Drawing.Size(75, 23);
+            this.SaveProfileName.TabIndex = 0;
+            this.SaveProfileName.Text = "Save name";
+            this.SaveProfileName.UseVisualStyleBackColor = true;
+            this.SaveProfileName.Click += new System.EventHandler(this.SaveProfileName_ClickAsync);
+            // 
+            // RenameProfile
+            // 
+            this.RenameProfile.Location = new System.Drawing.Point(3, 23);
+            this.RenameProfile.Name = "RenameProfile";
+            this.RenameProfile.Size = new System.Drawing.Size(191, 23);
+            this.RenameProfile.TabIndex = 1;
+            // 
+            // CloseNamePanel
+            // 
+            this.CloseNamePanel.AutoSize = true;
+            this.CloseNamePanel.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.CloseNamePanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.CloseNamePanel.Location = new System.Drawing.Point(180, 3);
+            this.CloseNamePanel.Name = "CloseNamePanel";
+            this.CloseNamePanel.Size = new System.Drawing.Size(16, 17);
+            this.CloseNamePanel.TabIndex = 2;
+            this.CloseNamePanel.Text = "X";
+            this.CloseNamePanel.Click += new System.EventHandler(this.CloseNamePanel_Click);
+            // 
+            // Rename
+            // 
+            this.Rename.Location = new System.Drawing.Point(175, 13);
+            this.Rename.Name = "Rename";
+            this.Rename.Size = new System.Drawing.Size(93, 23);
+            this.Rename.TabIndex = 8;
+            this.Rename.Text = "Change name";
+            this.Rename.UseVisualStyleBackColor = true;
+            this.Rename.Click += new System.EventHandler(this.Rename_Click);
+            // 
             // SoundProfileView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(531, 583);
+            this.Controls.Add(this.Rename);
             this.Controls.Add(this.ExportProfile);
             this.Controls.Add(this.ImportProfile);
             this.Controls.Add(this.NewProfileName);
@@ -505,6 +564,8 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.ProfileBox.PerformLayout();
             this.ProfileItemData.ResumeLayout(false);
             this.ProfileItemData.PerformLayout();
+            this.SetProfileNamePanel.ResumeLayout(false);
+            this.SetProfileNamePanel.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -553,5 +614,10 @@ namespace Org.Strausshome.FS.CrewSoundsNG
         private System.Windows.Forms.Button ImportProfile;
         private System.Windows.Forms.Button ExportProfile;
         private System.Windows.Forms.OpenFileDialog ImportProfileDialog;
+        private System.Windows.Forms.Panel SetProfileNamePanel;
+        private System.Windows.Forms.Label CloseNamePanel;
+        private System.Windows.Forms.TextBox RenameProfile;
+        private System.Windows.Forms.Button SaveProfileName;
+        private System.Windows.Forms.Button Rename;
     }
 }
