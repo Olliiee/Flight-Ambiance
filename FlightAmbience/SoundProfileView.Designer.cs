@@ -86,7 +86,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // AddNewProfile
             // 
-            this.AddNewProfile.Location = new System.Drawing.Point(445, 47);
+            this.AddNewProfile.Location = new System.Drawing.Point(445, 48);
             this.AddNewProfile.Name = "AddNewProfile";
             this.AddNewProfile.Size = new System.Drawing.Size(75, 24);
             this.AddNewProfile.TabIndex = 1;
@@ -454,7 +454,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             // 
             // NewProfileName
             // 
-            this.NewProfileName.Location = new System.Drawing.Point(295, 47);
+            this.NewProfileName.Location = new System.Drawing.Point(295, 48);
             this.NewProfileName.Name = "NewProfileName";
             this.NewProfileName.Size = new System.Drawing.Size(144, 23);
             this.NewProfileName.TabIndex = 5;
@@ -498,7 +498,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             this.Controls.Add(this.ProfileList);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SoundProfileView";
-            this.Text = "Audio Pfrofiles";
+            this.Text = "Audio Profiles";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SoundProfileView_FormClosing);
             this.Load += new System.EventHandler(this.SoundProfileView_LoadAsync);
             this.ProfileBox.ResumeLayout(false);

@@ -1,18 +1,18 @@
-﻿using Microsoft.Extensions.Logging;
-
-using Newtonsoft.Json;
-
-using Org.Strausshome.FS.CrewSoundsNG.Models;
-using Org.Strausshome.FS.CrewSoundsNG.Repositories;
-using Org.Strausshome.FS.CrewSoundsNG.Services;
-
-using System;
+﻿using System;
 using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+
+using Microsoft.Extensions.Logging;
+
+using Newtonsoft.Json;
+
+using Org.Strausshome.FS.CrewSoundsNG.Models;
+using Org.Strausshome.FS.CrewSoundsNG.Repositories;
+using Org.Strausshome.FS.CrewSoundsNG.Services;
 
 using File = System.IO.File;
 
@@ -24,12 +24,12 @@ namespace Org.Strausshome.FS.CrewSoundsNG
 
         private readonly FlightStatusRepository _flightStatusRepository;
         private readonly FlightStatusService _flightStatusService;
+        private readonly ImportExportService _importExportService;
         private readonly ILogger<SoundProfileView> _logger;
         private readonly MediaFileRepository _mediaFileRepository;
         private readonly MediaService _mediaService;
         private readonly ProfileRepository _profileRepository;
         private readonly SettingsRepository _settingsRepository;
-        private readonly ImportExportService _importExportService;
         private int soundChanel = 1;
 
         #endregion Private Fields
@@ -123,7 +123,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             AvFlightStatusItems.Items.Clear();
             foreach (var item in flightProfile.FlightStatus)
             {
-                if (profile.ProfileItems.Where(c => c.FlightStatus == item).FirstOrDefault() == null)
+                if (profile.ProfileItems.Where(c => c.FlightStatus.FlightStatusName == item.FlightStatusName).FirstOrDefault() == null)
                 {
                     AvFlightStatusItems.Items.Add(item.Name);
                 }
@@ -257,51 +257,6 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
         }
 
-        private async void ImportProfile_Click(object sender, EventArgs e)
-        {
-            ImportProfileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            var result = ImportProfileDialog.ShowDialog();
-            if (result == DialogResult.OK)
-            {
-                if (!Directory.Exists("import"))
-                {
-                    Directory.CreateDirectory("import");
-                }
-
-                ZipFile.ExtractToDirectory(ImportProfileDialog.FileName, "import");
-
-                using StreamReader reader = new($@"import\profile.json");
-                var content = reader.ReadToEnd();
-                reader.Close();
-                var profileData = JsonConvert.DeserializeObject<ExportProfile>(content);
-
-                string profileDir = $@"Profiles\{profileData.Name}";
-
-                if (Directory.Exists(profileDir))
-                {
-                    profileDir += $"_{DateTime.Now:ddMMyyyyHHmmss}";
-                    Directory.CreateDirectory(profileDir);
-                }
-                else
-                {
-                    Directory.CreateDirectory(profileDir);
-                }
-
-                File.Delete($@"import\profile.json");
-                var files = Directory.GetFiles("import");
-
-                foreach (var file in files)
-                {
-                    string fileName = System.IO.Path.GetFileName(file);
-                    File.Move($@"{file}", $@"{profileDir}\{fileName}");
-                }
-
-                await _profileRepository.AddProfileAsync(_importExportService.CreateImport(profileData)).ConfigureAwait(false);
-
-                Directory.Delete("import", true);
-            }
-        }
-
         private async void ExportProfile_ClickAsync(object sender, EventArgs e)
         {
             if (ProfileList.SelectedIndex < 0)
@@ -372,6 +327,51 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             }
 
             Directory.Delete("export", true);
+        }
+
+        private async void ImportProfile_Click(object sender, EventArgs e)
+        {
+            ImportProfileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            var result = ImportProfileDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                if (!Directory.Exists("import"))
+                {
+                    Directory.CreateDirectory("import");
+                }
+
+                ZipFile.ExtractToDirectory(ImportProfileDialog.FileName, "import");
+
+                using StreamReader reader = new($@"import\profile.json");
+                var content = reader.ReadToEnd();
+                reader.Close();
+                var profileData = JsonConvert.DeserializeObject<ExportProfile>(content);
+
+                string profileDir = $@"Profiles\{profileData.Name}";
+
+                if (Directory.Exists(profileDir))
+                {
+                    profileDir += $"_{DateTime.Now:ddMMyyyyHHmmss}";
+                    Directory.CreateDirectory(profileDir);
+                }
+                else
+                {
+                    Directory.CreateDirectory(profileDir);
+                }
+
+                File.Delete($@"import\profile.json");
+                var files = Directory.GetFiles("import");
+
+                foreach (var file in files)
+                {
+                    string fileName = System.IO.Path.GetFileName(file);
+                    File.Move($@"{file}", $@"{profileDir}\{fileName}");
+                }
+
+                await _profileRepository.AddProfileAsync(_importExportService.CreateImport(profileData)).ConfigureAwait(false);
+
+                Directory.Delete("import", true);
+            }
         }
 
         private async void ItemAltitude_KeyPress(object sender, KeyPressEventArgs e)
@@ -719,7 +719,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
             AvFlightStatusItems.Items.Clear();
             foreach (var item in flightProfile.FlightStatus)
             {
-                if (profile.ProfileItems.Where(c => c.FlightStatus == item).FirstOrDefault() == null)
+                if (profile.ProfileItems.Where(c => c.FlightStatus.FlightStatusName == item.FlightStatusName).FirstOrDefault() == null)
                 {
                     AvFlightStatusItems.Items.Add(item.Name);
                 }
@@ -755,7 +755,7 @@ namespace Org.Strausshome.FS.CrewSoundsNG
                 AvFlightStatusItems.Items.Clear();
                 foreach (var item in flightProfile.FlightStatus)
                 {
-                    if (profile.ProfileItems.Where(c => c.FlightStatus == item).FirstOrDefault() == null)
+                    if (profile.ProfileItems.Where(c => c.FlightStatus.FlightStatusName == item.FlightStatusName).FirstOrDefault() == null)
                     {
                         AvFlightStatusItems.Items.Add(item.Name);
                     }
